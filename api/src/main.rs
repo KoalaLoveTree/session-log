@@ -1,39 +1,27 @@
-use axum::extract::rejection::JsonRejection;
-use axum::extract::{Path, State};
-use axum::http::StatusCode;
-use axum::response::{IntoResponse, Response};
-use axum::routing::{delete, get};
-use axum::{Json, Router};
-use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
-use sqlx::postgres::PgPoolOptions;
-use sqlx::{FromRow, PgPool};
-use std::env;
-
 #[derive(Clone)]
 struct AppState {
-    pool: PgPool,
+    pool: sqlx::PgPool,
 }
 
-#[derive(Serialize, FromRow)]
+#[derive(serde::Serialize, sqlx::FromRow)]
 struct Entry {
     id: i64,
     body: String,
-    created_at: DateTime<Utc>,
+    created_at: chrono::DateTime<chrono::Utc>,
 }
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct EntryList {
     entries: Vec<Entry>,
 }
 
-#[derive(Deserialize)]
+#[derive(serde::Deserialize)]
 struct NewEntry {
     #[serde(default)]
     body: String,
 }
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 struct ErrorBody {
     error: &'static str,
 }
@@ -44,26 +32,26 @@ enum ApiError {
     Db(sqlx::Error),
 }
 
-impl IntoResponse for ApiError {
-    fn into_response(self) -> Response {
+impl axum::response::IntoResponse for ApiError {
+    fn into_response(self) -> axum::response::Response {
         match self {
             ApiError::EmptyBody => (
-                StatusCode::BAD_REQUEST,
-                Json(ErrorBody {
+                axum::http::StatusCode::BAD_REQUEST,
+                axum::Json(ErrorBody {
                     error: "body must not be empty",
                 }),
             )
                 .into_response(),
             ApiError::NotFound => (
-                StatusCode::NOT_FOUND,
-                Json(ErrorBody { error: "not found" }),
+                axum::http::StatusCode::NOT_FOUND,
+                axum::Json(ErrorBody { error: "not found" }),
             )
                 .into_response(),
             ApiError::Db(err) => {
                 eprintln!("db: {err}");
                 (
-                    StatusCode::INTERNAL_SERVER_ERROR,
-                    Json(ErrorBody { error: "internal" }),
+                    axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                    axum::Json(ErrorBody { error: "internal" }),
                 )
                     .into_response()
             }
@@ -72,10 +60,10 @@ impl IntoResponse for ApiError {
 }
 
 async fn create_entry(
-    State(state): State<AppState>,
-    payload: Result<Json<NewEntry>, JsonRejection>,
-) -> Result<(StatusCode, Json<Entry>), ApiError> {
-    let Json(new) = payload.map_err(|_| ApiError::EmptyBody)?;
+    axum::extract::State(state): axum::extract::State<AppState>,
+    payload: Result<axum::Json<NewEntry>, axum::extract::rejection::JsonRejection>,
+) -> Result<(axum::http::StatusCode, axum::Json<Entry>), ApiError> {
+    let axum::Json(new) = payload.map_err(|_| ApiError::EmptyBody)?;
     let body = new.body.trim();
     if body.is_empty() {
         return Err(ApiError::EmptyBody);
@@ -89,10 +77,12 @@ async fn create_entry(
     .await
     .map_err(ApiError::Db)?;
 
-    Ok((StatusCode::CREATED, Json(entry)))
+    Ok((axum::http::StatusCode::CREATED, axum::Json(entry)))
 }
 
-async fn list_entries(State(state): State<AppState>) -> Result<Json<EntryList>, ApiError> {
+async fn list_entries(
+    axum::extract::State(state): axum::extract::State<AppState>,
+) -> Result<axum::Json<EntryList>, ApiError> {
     let entries = sqlx::query_as::<_, Entry>(
         "SELECT id, body, created_at FROM entries WHERE deleted_at IS NULL ORDER BY created_at DESC, id DESC LIMIT 50",
     )
@@ -100,13 +90,13 @@ async fn list_entries(State(state): State<AppState>) -> Result<Json<EntryList>, 
     .await
     .map_err(ApiError::Db)?;
 
-    Ok(Json(EntryList { entries }))
+    Ok(axum::Json(EntryList { entries }))
 }
 
 async fn delete_entry(
-    State(state): State<AppState>,
-    Path(id): Path<i64>,
-) -> Result<StatusCode, ApiError> {
+    axum::extract::State(state): axum::extract::State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<i64>,
+) -> Result<axum::http::StatusCode, ApiError> {
     let result =
         sqlx::query("UPDATE entries SET deleted_at = now() WHERE id = $1 AND deleted_at IS NULL")
             .bind(id)
@@ -117,21 +107,24 @@ async fn delete_entry(
     if result.rows_affected() == 0 {
         return Err(ApiError::NotFound);
     }
-    Ok(StatusCode::NO_CONTENT)
+    Ok(axum::http::StatusCode::NO_CONTENT)
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let database_url = env::var("DATABASE_URL")?;
-    let pool = PgPoolOptions::new()
+    let database_url = std::env::var("DATABASE_URL")?;
+    let pool = sqlx::postgres::PgPoolOptions::new()
         .max_connections(5)
         .connect(&database_url)
         .await?;
     sqlx::migrate!("./migrations").run(&pool).await?;
 
-    let app = Router::new()
-        .route("/api/entries", get(list_entries).post(create_entry))
-        .route("/api/entries/{id}", delete(delete_entry))
+    let app = axum::Router::new()
+        .route(
+            "/api/entries",
+            axum::routing::get(list_entries).post(create_entry),
+        )
+        .route("/api/entries/{id}", axum::routing::delete(delete_entry))
         .with_state(AppState { pool });
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await?;
