@@ -4,16 +4,18 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Now
 
-- Tags, search
+- Menu: log / deleted (and room for more). Not: React Router unless we pick it.
 
 ## Next
 
-- Weekly summary once there is data
-- Pretty LAN name (`session-log.lan` / `.local`): router DNS or mDNS. Not app code; not for the stranger clone path.
+- README for a stranger: clone URL, what it is in a few lines, one screenshot. Not: a marketing site.
+- `LICENSE` (MIT unless you pick another). Not: CLA or contributor docs.
 
 ## Later
 
-- A real menu (log / deleted / whatever comes next). Not: React Router unless we pick it; we already have `/` and `/deleted` with one link each.
+- Tags, search. Not: until there are enough notes to bother.
+- Weekly summary once there is data
+- Pretty LAN name (`session-log.lan` / `.local`): router DNS or mDNS. Not app code; not for the stranger clone path.
 - More than 50 notes: pagination, load more, or another shape. Not: pick the UI in this line.
   - `GET /api/entries` and `GET /api/entries/deleted` both `LIMIT 50` today
   - Discuss later: pages vs “load more” vs by date
@@ -22,17 +24,13 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 ## Done
 
 - Working files: `AGENTS.md` (four rules + v1 fence) + this list
-- User skill `ticket` (`~/.grok/skills/ticket/SKILL.md`)
-- User skill `commit` (`~/.grok/skills/commit/SKILL.md`): `/commit` after accept; push only if `origin` exists
 - Tight spec: `SPEC.md` (folders, two routes, one screen, compose)
-- User skill `status` (`~/.grok/skills/status/SKILL.md`): `/status` leftover commit/push check
 - Compose + something at `:3000` (placeholder page, `127.0.0.1` only)
 - Dark page by default. Not: theme toggle, light theme, or a CSS framework
 - README is the clone path; personal notes in gitignored `GROK.md`
 - First real `POST`/`GET` + the page. Not: OpenAPI, CI, extra routes, or LAN bind
-- Ticket loop: short plan, stop for go (`ticket` skill + `AGENTS.md`)
+- Ticket loop: short plan, stop for go (`AGENTS.md`)
 - Center the page; Enter submits, Shift+Enter new line
-- User skill `task` (`~/.grok/skills/task/SKILL.md`): `/task` parks a discussion on this board; nudge once in chat
 - Soft-delete an entry with confirm. Not: purge, restore UI, or showing deleted rows
 - Show newlines in the list (`white-space: pre-wrap`)
 - Refactor `api/src/main.rs`: qualify crate types at the use site. Not: extra crates or files
@@ -48,3 +46,4 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - Rename to session log (`session-log`). Not: tags/search
 - API tests (`cargo test`). Not: unit tests or Playwright
 - GitHub Actions: fmt, clippy, test, build. Not: inventing origin (you added it)
+- Reordered the board: menu **Now**; tags/search **Later** until there are notes
