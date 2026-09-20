@@ -11,6 +11,8 @@ export default function App() {
   const [entries, setEntries] = useState<Entry[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editBody, setEditBody] = useState("");
 
   async function load() {
     const res = await fetch("/api/entries");
@@ -85,6 +87,36 @@ export default function App() {
     }
   }
 
+  function startEdit(entry: Entry) {
+    setError(null);
+    setEditingId(entry.id);
+    setEditBody(entry.body);
+  }
+
+  async function onSaveEdit(event: FormEvent, id: number) {
+    event.preventDefault();
+    setError(null);
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/entries/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ body: editBody }),
+      });
+      const data: { error?: string } = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "could not save");
+        return;
+      }
+      setEditingId(null);
+      await load();
+    } catch {
+      setError("could not save");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <main>
       <h1>lr</h1>
@@ -110,6 +142,15 @@ export default function App() {
                 <time dateTime={entry.created_at}>
                   {new Date(entry.created_at).toLocaleString()}
                 </time>
+                {editingId === entry.id ? null : (
+                  <button
+                    type="button"
+                    onClick={() => startEdit(entry)}
+                    disabled={busy}
+                  >
+                    Edit
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => onDelete(entry.id)}
@@ -118,7 +159,30 @@ export default function App() {
                   Delete
                 </button>
               </div>
-              <p>{entry.body}</p>
+              {editingId === entry.id ? (
+                <form onSubmit={(event) => onSaveEdit(event, entry.id)}>
+                  <textarea
+                    value={editBody}
+                    onChange={(event) => setEditBody(event.target.value)}
+                    onKeyDown={onKeyDown}
+                    rows={4}
+                  />
+                  <div className="actions">
+                    <button type="submit" disabled={busy}>
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingId(null)}
+                      disabled={busy}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <p>{entry.body}</p>
+              )}
             </li>
           ))}
         </ul>

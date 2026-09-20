@@ -93,6 +93,32 @@ async fn list_entries(
     Ok(axum::Json(EntryList { entries }))
 }
 
+async fn update_entry(
+    axum::extract::State(state): axum::extract::State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<i64>,
+    payload: Result<axum::Json<NewEntry>, axum::extract::rejection::JsonRejection>,
+) -> Result<axum::Json<Entry>, ApiError> {
+    let axum::Json(new) = payload.map_err(|_| ApiError::EmptyBody)?;
+    let body = new.body.trim();
+    if body.is_empty() {
+        return Err(ApiError::EmptyBody);
+    }
+
+    let entry = sqlx::query_as::<_, Entry>(
+        "UPDATE entries SET body = $1 WHERE id = $2 AND deleted_at IS NULL RETURNING id, body, created_at",
+    )
+    .bind(body)
+    .bind(id)
+    .fetch_optional(&state.pool)
+    .await
+    .map_err(ApiError::Db)?;
+
+    match entry {
+        Some(entry) => Ok(axum::Json(entry)),
+        None => Err(ApiError::NotFound),
+    }
+}
+
 async fn delete_entry(
     axum::extract::State(state): axum::extract::State<AppState>,
     axum::extract::Path(id): axum::extract::Path<i64>,
@@ -124,7 +150,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             "/api/entries",
             axum::routing::get(list_entries).post(create_entry),
         )
-        .route("/api/entries/{id}", axum::routing::delete(delete_entry))
+        .route(
+            "/api/entries/{id}",
+            axum::routing::put(update_entry).delete(delete_entry),
+        )
         .with_state(AppState { pool });
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await?;

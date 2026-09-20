@@ -65,6 +65,14 @@ Request: `{ "body": "string" }`
 - 200 `{ "entries": [ { "id", "body", "created_at" }, ... ] }`
 - Newest first. Cap 50. No query params in v1. Skip rows with `deleted_at` set.
 
+### `PUT /api/entries/{id}`
+
+Request: `{ "body": "string" }`
+
+- 200 `{ "id", "body", "created_at" }` — `created_at` unchanged
+- 400 `{ "error": "body must not be empty" }` if missing, empty, or whitespace-only
+- 404 `{ "error": "not found" }` if missing or already deleted
+
 ### `DELETE /api/entries/{id}`
 
 Soft-delete: set `deleted_at`. Do not remove the row.
@@ -83,9 +91,10 @@ One page, no client router.
 - List: `created_at` and `body` for each entry from `GET /api/entries`
 - Empty: `No entries yet.`
 - Delete on a row → confirm “Are you sure?” → `DELETE /api/entries/{id}`, then reload the list
+- Edit on a row → textarea + Save / Cancel → `PUT /api/entries/{id}`, then reload the list
 - Do not show soft-deleted entries
 
-No tags, search, edit, restore, or login.
+No tags, search, restore, or login.
 
 ## Compose
 

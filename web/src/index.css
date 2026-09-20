@@ -78,3 +78,12 @@ li p {
   margin: 0.25rem 0 0;
   white-space: pre-wrap;
 }
+
+li form {
+  margin: 0.25rem 0 0;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
