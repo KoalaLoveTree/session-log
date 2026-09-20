@@ -3,25 +3,25 @@ struct AppState {
     pool: sqlx::PgPool,
 }
 
-#[derive(serde::Serialize, sqlx::FromRow)]
+#[derive(serde::Serialize, sqlx::FromRow, utoipa::ToSchema)]
 struct Entry {
     id: i64,
     body: String,
     created_at: chrono::DateTime<chrono::Utc>,
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, utoipa::ToSchema)]
 struct EntryList {
     entries: Vec<Entry>,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, utoipa::ToSchema)]
 struct NewEntry {
     #[serde(default)]
     body: String,
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, utoipa::ToSchema)]
 struct ErrorBody {
     error: &'static str,
 }
@@ -59,6 +59,15 @@ impl axum::response::IntoResponse for ApiError {
     }
 }
 
+#[utoipa::path(
+    post,
+    path = "/api/entries",
+    request_body = NewEntry,
+    responses(
+        (status = 201, description = "Created", body = Entry),
+        (status = 400, description = "Empty body", body = ErrorBody)
+    )
+)]
 async fn create_entry(
     axum::extract::State(state): axum::extract::State<AppState>,
     payload: Result<axum::Json<NewEntry>, axum::extract::rejection::JsonRejection>,
@@ -80,6 +89,11 @@ async fn create_entry(
     Ok((axum::http::StatusCode::CREATED, axum::Json(entry)))
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/entries",
+    responses((status = 200, description = "Visible entries", body = EntryList))
+)]
 async fn list_entries(
     axum::extract::State(state): axum::extract::State<AppState>,
 ) -> Result<axum::Json<EntryList>, ApiError> {
@@ -93,6 +107,11 @@ async fn list_entries(
     Ok(axum::Json(EntryList { entries }))
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/entries/deleted",
+    responses((status = 200, description = "Soft-deleted entries", body = EntryList))
+)]
 async fn list_deleted(
     axum::extract::State(state): axum::extract::State<AppState>,
 ) -> Result<axum::Json<EntryList>, ApiError> {
@@ -106,6 +125,17 @@ async fn list_deleted(
     Ok(axum::Json(EntryList { entries }))
 }
 
+#[utoipa::path(
+    put,
+    path = "/api/entries/{id}",
+    params(("id" = i64, Path, description = "Entry id")),
+    request_body = NewEntry,
+    responses(
+        (status = 200, description = "Updated", body = Entry),
+        (status = 400, description = "Empty body", body = ErrorBody),
+        (status = 404, description = "Not found", body = ErrorBody)
+    )
+)]
 async fn update_entry(
     axum::extract::State(state): axum::extract::State<AppState>,
     axum::extract::Path(id): axum::extract::Path<i64>,
@@ -132,6 +162,15 @@ async fn update_entry(
     }
 }
 
+#[utoipa::path(
+    delete,
+    path = "/api/entries/{id}",
+    params(("id" = i64, Path, description = "Entry id")),
+    responses(
+        (status = 204, description = "Soft-deleted"),
+        (status = 404, description = "Not found", body = ErrorBody)
+    )
+)]
 async fn delete_entry(
     axum::extract::State(state): axum::extract::State<AppState>,
     axum::extract::Path(id): axum::extract::Path<i64>,
@@ -149,6 +188,15 @@ async fn delete_entry(
     Ok(axum::http::StatusCode::NO_CONTENT)
 }
 
+#[utoipa::path(
+    post,
+    path = "/api/entries/{id}/restore",
+    params(("id" = i64, Path, description = "Entry id")),
+    responses(
+        (status = 200, description = "Restored", body = Entry),
+        (status = 404, description = "Not found", body = ErrorBody)
+    )
+)]
 async fn restore_entry(
     axum::extract::State(state): axum::extract::State<AppState>,
     axum::extract::Path(id): axum::extract::Path<i64>,
@@ -167,6 +215,15 @@ async fn restore_entry(
     }
 }
 
+#[utoipa::path(
+    delete,
+    path = "/api/entries/{id}/purge",
+    params(("id" = i64, Path, description = "Entry id")),
+    responses(
+        (status = 204, description = "Purged"),
+        (status = 404, description = "Not found", body = ErrorBody)
+    )
+)]
 async fn purge_entry(
     axum::extract::State(state): axum::extract::State<AppState>,
     axum::extract::Path(id): axum::extract::Path<i64>,
@@ -183,6 +240,59 @@ async fn purge_entry(
     Ok(axum::http::StatusCode::NO_CONTENT)
 }
 
+#[derive(utoipa::OpenApi)]
+#[openapi(
+    paths(
+        list_entries,
+        list_deleted,
+        create_entry,
+        update_entry,
+        delete_entry,
+        restore_entry,
+        purge_entry
+    ),
+    components(schemas(Entry, EntryList, NewEntry, ErrorBody))
+)]
+struct ApiDoc;
+
+async fn swagger_dark_css() -> impl axum::response::IntoResponse {
+    (
+        [(axum::http::header::CONTENT_TYPE, "text/css; charset=utf-8")],
+        include_str!("../swagger-dark.css"),
+    )
+}
+
+async fn inject_swagger_dark(
+    request: axum::extract::Request,
+    next: axum::middleware::Next,
+) -> axum::response::Response {
+    let response = next.run(request).await;
+    let content_type = response
+        .headers()
+        .get(axum::http::header::CONTENT_TYPE)
+        .and_then(|value| value.to_str().ok())
+        .unwrap_or("")
+        .to_string();
+    if !content_type.contains("text/html") {
+        return response;
+    }
+    let (mut parts, body) = response.into_parts();
+    let Ok(bytes) = axum::body::to_bytes(body, 1_000_000).await else {
+        return axum::response::Response::from_parts(parts, axum::body::Body::empty());
+    };
+    let html = String::from_utf8_lossy(&bytes);
+    let html = if html.contains("dark.css") {
+        html.into_owned()
+    } else {
+        html.replace(
+            "</head>",
+            r#"<link rel="stylesheet" href="/api/docs/dark.css" /></head>"#,
+        )
+    };
+    parts.headers.remove(axum::http::header::CONTENT_LENGTH);
+    axum::response::Response::from_parts(parts, axum::body::Body::from(html))
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let database_url = std::env::var("DATABASE_URL")?;
@@ -193,6 +303,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     sqlx::migrate!("./migrations").run(&pool).await?;
 
     let app = axum::Router::new()
+        .route("/api/docs/dark.css", axum::routing::get(swagger_dark_css))
+        .merge(
+            utoipa_swagger_ui::SwaggerUi::new("/api/docs")
+                .url("/api/openapi.json", <ApiDoc as utoipa::OpenApi>::openapi())
+                .config(
+                    utoipa_swagger_ui::Config::from("/api/openapi.json").with_syntax_highlight(
+                        utoipa_swagger_ui::SyntaxHighlight::default().theme("monokai"),
+                    ),
+                ),
+        )
+        .layer(axum::middleware::from_fn(inject_swagger_dark))
         .route(
             "/api/entries",
             axum::routing::get(list_entries).post(create_entry),

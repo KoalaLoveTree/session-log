@@ -98,6 +98,14 @@ Remove the row. Only if `deleted_at` is set.
 - 204 if it was deleted
 - 404 `{ "error": "not found" }` if missing or still visible
 
+### `GET /api/openapi.json`
+
+Generated OpenAPI document.
+
+### `GET /api/docs`
+
+Swagger UI for that document (dark overlay, same palette as the log).
+
 No other endpoints.
 
 ## Screen
@@ -130,4 +138,4 @@ Same compose file, two projects. Live: `.env` from `.env.example` (`COMPOSE_PROJ
 
 ## Out
 
-OpenAPI, CI, extra folders for “structure,” a second page, CORS (not needed behind the proxy).
+CI, extra folders for “structure,” CORS (not needed behind the proxy).

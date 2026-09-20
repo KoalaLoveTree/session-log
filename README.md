@@ -26,3 +26,4 @@ Open `http://localhost:3001`. Both can run at once.
 
 - `SPEC.md` — v1 (page, table, two routes, compose)
 - `TICKETS.md` — work queue
+- [http://localhost:3000/api/docs](http://localhost:3000/api/docs) — API (Swagger)

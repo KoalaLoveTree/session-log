@@ -1,0 +1,66 @@
+html {
+  color-scheme: dark;
+}
+
+body,
+.swagger-ui,
+.swagger-ui .scheme-container,
+.swagger-ui .wrapper {
+  background: #1c1917;
+  color: #b6aa9a;
+}
+
+.swagger-ui .topbar {
+  background: #25211e;
+}
+
+.swagger-ui .info .title,
+.swagger-ui .info p,
+.swagger-ui .info li,
+.swagger-ui .opblock-tag,
+.swagger-ui .opblock .opblock-summary-path,
+.swagger-ui .opblock .opblock-summary-description,
+.swagger-ui table thead tr th,
+.swagger-ui .parameter__name,
+.swagger-ui .parameter__type,
+.swagger-ui .tab li,
+.swagger-ui .model-title,
+.swagger-ui .model,
+.swagger-ui .response-col_status,
+.swagger-ui .response-col_description,
+.swagger-ui label,
+.swagger-ui .opblock-description-wrapper p,
+.swagger-ui .opblock-external-docs-wrapper,
+.swagger-ui .opblock-title_normal,
+.swagger-ui section.models h4 {
+  color: #b6aa9a;
+}
+
+.swagger-ui .opblock {
+  background: #25211e;
+  border-color: #3a342f;
+}
+
+.swagger-ui .opblock .opblock-section-header {
+  background: #1c1917;
+}
+
+.swagger-ui input[type="text"],
+.swagger-ui input[type="password"],
+.swagger-ui input[type="search"],
+.swagger-ui textarea,
+.swagger-ui select {
+  background: #25211e;
+  color: #b6aa9a;
+  border-color: #3a342f;
+}
+
+.swagger-ui .model-box,
+.swagger-ui section.models,
+.swagger-ui .dialog-ux .modal-ux {
+  background: #25211e;
+}
+
+.swagger-ui a {
+  color: #c4b5a0;
+}
