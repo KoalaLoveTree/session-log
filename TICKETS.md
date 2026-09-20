@@ -4,11 +4,10 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 
 ## Now
 
-- Show newlines in the list (`Shift+Enter` is stored, the page ignores them).
+- Edit an entry. Not: history, drafts, or a second page.
 
 ## Next
 
-- Edit an entry. Not: history, drafts, or a second page.
 - Separate test vs live (two stacks/data so tests do not land in the real log). Not: public deploy or extra apps.
 - Lists/bullets in the body and on the page. Not: a rich-text plugin or markdown flavor unless a ticket names one.
 - Refactor `api/src/main.rs`: qualify crate types at the use site (e.g. `axum::Json`). Not: extra crates, extra files, or clippy CI.
@@ -38,3 +37,4 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 - Center the page; Enter submits, Shift+Enter new line
 - User skill `task` (`~/.grok/skills/task/SKILL.md`): `/task` parks a discussion on this board; nudge once in chat
 - Soft-delete an entry with confirm. Not: purge, restore UI, or showing deleted rows
+- Show newlines in the list (`white-space: pre-wrap`)
