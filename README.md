@@ -74,6 +74,14 @@ User zero is you. User one is the mentor who clones.
 
 Do not paste “build the app” and accept a 40-file dump.
 
+## Run
+
+```bash
+docker compose up --build
+```
+
+Open `http://localhost:3000`.
+
 ## Next
 
 Work items live in `TICKETS.md`. Keep the name `lr` until a stranger would not know what the repo is. Do not bikeshed it now.

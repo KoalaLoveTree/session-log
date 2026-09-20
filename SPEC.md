@@ -30,7 +30,7 @@ Do not add packages, crates, or routers until a file is too big to explain.
 
 ## Web
 
-Vite + React + TypeScript. One `App.tsx`, no React Router, no UI kit, no CSS framework — a single CSS file is enough.
+Vite + React + TypeScript. One `App.tsx`, no React Router, no UI kit, no CSS framework — a single CSS file is enough. Dark warm background, muted text (reading-mode, not near-white); no light theme or toggle in v1.
 
 The `web` image: `npm` build, then **nginx** serves `dist/` on port 80 (published as **3000**) and reverse-proxies `/api` to `api:8080`.
 

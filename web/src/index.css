@@ -1,0 +1,17 @@
+:root {
+  color-scheme: dark;
+  font-family: sans-serif;
+  line-height: 1.5;
+  background: #1c1917;
+  color: #b6aa9a;
+}
+
+html,
+body {
+  background: #1c1917;
+  color: #b6aa9a;
+}
+
+body {
+  margin: 1.5rem;
+}
