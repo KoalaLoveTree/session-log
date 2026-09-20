@@ -4,7 +4,7 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Now
 
-- GitHub remote + Actions (fmt/clippy/build). Not: force-push or inventing a fake remote.
+- GitHub remote + Actions (fmt/clippy/test/build). Not: force-push or inventing a fake remote.
 
 ## Next
 
@@ -47,3 +47,4 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - OpenAPI + Swagger at `/api/docs` (dark CSS). Not: rustfmt, clippy, or GitHub
 - Local `rustfmt` / `clippy`. Not: Actions
 - Rename to session log (`session-log`). Not: tags/search
+- API tests (`cargo test`). Not: unit tests or Playwright

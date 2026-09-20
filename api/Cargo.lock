@@ -36,6 +36,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "tokio",
+ "tower",
  "utoipa",
  "utoipa-swagger-ui",
 ]

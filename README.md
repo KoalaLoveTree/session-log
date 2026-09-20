@@ -28,7 +28,10 @@ Open `http://localhost:3001`. Both can run at once.
 cd api
 cargo fmt
 cargo clippy -- -D warnings
+DATABASE_URL=postgres://lr:lr@127.0.0.1:5433/lr cargo test
 ```
+
+`cargo test` needs the test stack (`docker compose --env-file .env.test up --build`) so Postgres is on `127.0.0.1:5433`. Tests create their own databases; they do not write your log.
 
 ## Docs
 
