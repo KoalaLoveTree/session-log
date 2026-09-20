@@ -4,17 +4,19 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 
 ## Now
 
-- Delete an entry (clean test lines). Not: bulk wipe, undo, or a second page.
+- Show newlines in the list (`Shift+Enter` is stored, the page ignores them).
 
 ## Next
 
-- Show newlines in the list (`Shift+Enter` is stored, the page ignores them).
 - Edit an entry. Not: history, drafts, or a second page.
 - Separate test vs live (two stacks/data so tests do not land in the real log). Not: public deploy or extra apps.
 - Lists/bullets in the body and on the page. Not: a rich-text plugin or markdown flavor unless a ticket names one.
+- Refactor `api/src/main.rs`: qualify crate types at the use site (e.g. `axum::Json`). Not: extra crates, extra files, or clippy CI.
 
 ## Later
 
+- Restore a soft-deleted entry. Not: a trash page in this item; hide deleted until then.
+- Hard-delete (purge) soft-deleted rows. Not: wipe visible entries.
 - Phone on the same Wi‑Fi: publish `:3000` on all interfaces (not `127.0.0.1`), one README line with `http://<lan-ip>:3000`. Not: public deploy, HTTPS, extra ports, or a second hostname.
 - OpenAPI (`utoipa`), GitHub Actions, rustfmt/clippy in CI
 - Tags, search, rename `lr`
@@ -35,3 +37,4 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 - Ticket loop: short plan, stop for go (`ticket` skill + `AGENTS.md`)
 - Center the page; Enter submits, Shift+Enter new line
 - User skill `task` (`~/.grok/skills/task/SKILL.md`): `/task` parks a discussion on this board; nudge once in chat
+- Soft-delete an entry with confirm. Not: purge, restore UI, or showing deleted rows

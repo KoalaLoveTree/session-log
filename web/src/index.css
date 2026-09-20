@@ -64,6 +64,12 @@ li {
   margin-bottom: 1rem;
 }
 
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 time {
   color: #8a8076;
 }

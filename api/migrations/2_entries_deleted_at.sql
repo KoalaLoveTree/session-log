@@ -1,0 +1,2 @@
+ALTER TABLE entries
+ADD COLUMN deleted_at TIMESTAMPTZ;

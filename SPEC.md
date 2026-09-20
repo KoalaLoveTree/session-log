@@ -45,6 +45,7 @@ Postgres. One table `entries`:
 | `id` | `BIGSERIAL` PK | |
 | `body` | `TEXT NOT NULL` | trimmed; reject empty |
 | `created_at` | `TIMESTAMPTZ NOT NULL` | default `now()` |
+| `deleted_at` | `TIMESTAMPTZ NULL` | set on soft-delete; hidden from the list |
 
 No other tables.
 
@@ -62,7 +63,14 @@ Request: `{ "body": "string" }`
 ### `GET /api/entries`
 
 - 200 `{ "entries": [ { "id", "body", "created_at" }, ... ] }`
-- Newest first. Cap 50. No query params in v1.
+- Newest first. Cap 50. No query params in v1. Skip rows with `deleted_at` set.
+
+### `DELETE /api/entries/{id}`
+
+Soft-delete: set `deleted_at`. Do not remove the row.
+
+- 204 if it was visible
+- 404 `{ "error": "not found" }` if missing or already deleted
 
 No other endpoints.
 
@@ -74,8 +82,10 @@ One page, no client router.
 - Submit → `POST /api/entries`, then reload the list
 - List: `created_at` and `body` for each entry from `GET /api/entries`
 - Empty: `No entries yet.`
+- Delete on a row → confirm “Are you sure?” → `DELETE /api/entries/{id}`, then reload the list
+- Do not show soft-deleted entries
 
-No tags, search, edit, delete, or login.
+No tags, search, edit, restore, or login.
 
 ## Compose
 

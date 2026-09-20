@@ -13,7 +13,7 @@ Do not paste “build the app” and accept a 40-file dump.
 
 ## v1 fence
 
-In: one page (text box, submit, recent list), one table (`id`, `body`, `created_at`), `POST /api/entries` and `GET /api/entries`, `docker compose up` → `http://localhost:3000`.
+In: one page (text box, submit, recent list, delete with confirm), one table (`id`, `body`, `created_at`, `deleted_at`), `POST`/`GET` `/api/entries` and `DELETE /api/entries/{id}` (soft-delete), `docker compose up` → `http://localhost:3000`.
 
 Out: tags, search, auth, public deploy, LLM features, PHP, scrapers, GraphQL, extra features. Localhost is enough to run. GitHub is the public surface.
 

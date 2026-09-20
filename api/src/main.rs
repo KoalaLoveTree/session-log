@@ -1,8 +1,8 @@
 use axum::extract::rejection::JsonRejection;
-use axum::extract::State;
+use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
-use axum::routing::get;
+use axum::routing::{delete, get};
 use axum::{Json, Router};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -40,6 +40,7 @@ struct ErrorBody {
 
 enum ApiError {
     EmptyBody,
+    NotFound,
     Db(sqlx::Error),
 }
 
@@ -51,6 +52,11 @@ impl IntoResponse for ApiError {
                 Json(ErrorBody {
                     error: "body must not be empty",
                 }),
+            )
+                .into_response(),
+            ApiError::NotFound => (
+                StatusCode::NOT_FOUND,
+                Json(ErrorBody { error: "not found" }),
             )
                 .into_response(),
             ApiError::Db(err) => {
@@ -88,13 +94,30 @@ async fn create_entry(
 
 async fn list_entries(State(state): State<AppState>) -> Result<Json<EntryList>, ApiError> {
     let entries = sqlx::query_as::<_, Entry>(
-        "SELECT id, body, created_at FROM entries ORDER BY created_at DESC, id DESC LIMIT 50",
+        "SELECT id, body, created_at FROM entries WHERE deleted_at IS NULL ORDER BY created_at DESC, id DESC LIMIT 50",
     )
     .fetch_all(&state.pool)
     .await
     .map_err(ApiError::Db)?;
 
     Ok(Json(EntryList { entries }))
+}
+
+async fn delete_entry(
+    State(state): State<AppState>,
+    Path(id): Path<i64>,
+) -> Result<StatusCode, ApiError> {
+    let result =
+        sqlx::query("UPDATE entries SET deleted_at = now() WHERE id = $1 AND deleted_at IS NULL")
+            .bind(id)
+            .execute(&state.pool)
+            .await
+            .map_err(ApiError::Db)?;
+
+    if result.rows_affected() == 0 {
+        return Err(ApiError::NotFound);
+    }
+    Ok(StatusCode::NO_CONTENT)
 }
 
 #[tokio::main]
@@ -108,6 +131,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let app = Router::new()
         .route("/api/entries", get(list_entries).post(create_entry))
+        .route("/api/entries/{id}", delete(delete_entry))
         .with_state(AppState { pool });
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await?;

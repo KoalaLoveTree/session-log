@@ -58,6 +58,33 @@ export default function App() {
     }
   }
 
+  async function onDelete(id: number) {
+    if (!confirm("Are you sure?")) {
+      return;
+    }
+    setError(null);
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/entries/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        let message = "could not delete";
+        try {
+          const data: { error?: string } = await res.json();
+          message = data.error ?? message;
+        } catch {
+          /* 204 has no body */
+        }
+        setError(message);
+        return;
+      }
+      await load();
+    } catch {
+      setError("could not delete");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <main>
       <h1>lr</h1>
@@ -79,9 +106,18 @@ export default function App() {
         <ul>
           {entries.map((entry) => (
             <li key={entry.id}>
-              <time dateTime={entry.created_at}>
-                {new Date(entry.created_at).toLocaleString()}
-              </time>
+              <div className="meta">
+                <time dateTime={entry.created_at}>
+                  {new Date(entry.created_at).toLocaleString()}
+                </time>
+                <button
+                  type="button"
+                  onClick={() => onDelete(entry.id)}
+                  disabled={busy}
+                >
+                  Delete
+                </button>
+              </div>
               <p>{entry.body}</p>
             </li>
           ))}
