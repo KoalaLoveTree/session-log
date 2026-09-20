@@ -167,6 +167,22 @@ async fn restore_entry(
     }
 }
 
+async fn purge_entry(
+    axum::extract::State(state): axum::extract::State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<i64>,
+) -> Result<axum::http::StatusCode, ApiError> {
+    let result = sqlx::query("DELETE FROM entries WHERE id = $1 AND deleted_at IS NOT NULL")
+        .bind(id)
+        .execute(&state.pool)
+        .await
+        .map_err(ApiError::Db)?;
+
+    if result.rows_affected() == 0 {
+        return Err(ApiError::NotFound);
+    }
+    Ok(axum::http::StatusCode::NO_CONTENT)
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let database_url = std::env::var("DATABASE_URL")?;
@@ -189,6 +205,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .route(
             "/api/entries/{id}/restore",
             axum::routing::post(restore_entry),
+        )
+        .route(
+            "/api/entries/{id}/purge",
+            axum::routing::delete(purge_entry),
         )
         .with_state(AppState { pool });
 

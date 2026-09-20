@@ -164,6 +164,33 @@ export default function App() {
     }
   }
 
+  async function onPurge(id: number) {
+    if (!confirm("Are you sure?")) {
+      return;
+    }
+    setError(null);
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/entries/${id}/purge`, { method: "DELETE" });
+      if (!res.ok) {
+        let message = "could not purge";
+        try {
+          const data: { error?: string } = await res.json();
+          message = data.error ?? message;
+        } catch {
+          /* 204 has no body */
+        }
+        setError(message);
+        return;
+      }
+      await load();
+    } catch {
+      setError("could not purge");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   function startEdit(entry: Entry) {
     setError(null);
     setEditingId(entry.id);
@@ -218,6 +245,13 @@ export default function App() {
                     disabled={busy}
                   >
                     Restore
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onPurge(entry.id)}
+                    disabled={busy}
+                  >
+                    Purge
                   </button>
                 </div>
                 <EntryBody body={entry.body} />

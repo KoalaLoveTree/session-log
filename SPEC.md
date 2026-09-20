@@ -91,6 +91,13 @@ Clear `deleted_at`.
 - 200 `{ "id", "body", "created_at" }`
 - 404 `{ "error": "not found" }` if missing or not deleted
 
+### `DELETE /api/entries/{id}/purge`
+
+Remove the row. Only if `deleted_at` is set.
+
+- 204 if it was deleted
+- 404 `{ "error": "not found" }` if missing or still visible
+
 No other endpoints.
 
 ## Screen
@@ -98,7 +105,7 @@ No other endpoints.
 Two URLs, one `App.tsx`, no React Router. nginx `try_files` serves `index.html` for both.
 
 - `/` — text area, list, edit, delete
-- `/deleted` — `GET /api/entries/deleted`, Restore → `POST /api/entries/{id}/restore`. Empty: `No deleted entries.`
+- `/deleted` — `GET /api/entries/deleted`, Restore → `POST /api/entries/{id}/restore`, Purge → `DELETE /api/entries/{id}/purge` (confirm). Empty: `No deleted entries.`
 - A single link each way. No menu yet.
 - Submit → `POST /api/entries`, then reload the list
 - List: `created_at` and `body` for each entry from `GET /api/entries`

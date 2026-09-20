@@ -4,11 +4,10 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Now
 
-- Hard-delete (purge) soft-deleted rows. Not: wipe visible entries.
+- Phone on the same Wi‑Fi: publish `:3000` on all interfaces (not `127.0.0.1`), one README line with `http://<lan-ip>:3000`. Not: public deploy, HTTPS, extra ports, or a second hostname.
 
 ## Next
 
-- Phone on the same Wi‑Fi: publish `:3000` on all interfaces (not `127.0.0.1`), one README line with `http://<lan-ip>:3000`. Not: public deploy, HTTPS, extra ports, or a second hostname.
 - OpenAPI (`utoipa`), GitHub Actions, rustfmt/clippy in CI
 - Tags, search, rename `lr`
 - Weekly summary once there is data
@@ -43,3 +42,4 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - Separate test vs live (two compose projects, ports 3000 / 3001). Not: a second source tree
 - Lists/bullets: `- ` disc, `* ` circle. Not: a plugin or nested lists
 - Restore soft-deleted entries at `/deleted`. Not: a menu or purge
+- Purge a soft-deleted row (`DELETE /api/entries/{id}/purge`). Not: wipe visible entries
