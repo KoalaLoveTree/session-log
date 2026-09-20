@@ -85,6 +85,9 @@ export default function App() {
     if (event.key !== "Enter" || event.shiftKey || event.nativeEvent.isComposing) {
       return;
     }
+    if (window.matchMedia("(pointer: coarse)").matches) {
+      return;
+    }
     event.preventDefault();
     event.currentTarget.form?.requestSubmit();
   }

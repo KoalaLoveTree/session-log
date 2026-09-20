@@ -8,9 +8,6 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Next
 
-- Phone Enter: today Enter submits, so a phone cannot add a newline (no Shift+Enter). Not: drop desktop Enter-to-submit unless we pick that.
-  - Desktop: Enter = submit, Shift+Enter = newline
-  - Discuss: newline on mobile Enter, a newline button, or submit only via Add
 - Tags, search, rename `lr`
 - Weekly summary once there is data
 - Pretty LAN name (`lr.lan` / `.local`): router DNS or mDNS. Not app code; not for the stranger clone path.
@@ -46,3 +43,4 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - Restore soft-deleted entries at `/deleted`. Not: a menu or purge
 - Purge a soft-deleted row (`DELETE /api/entries/{id}/purge`). Not: wipe visible entries
 - Phone on the same Wi‑Fi: `:3000` on all interfaces. Not: public deploy or a pretty hostname
+- Phone Enter is a newline; desktop Enter still submits. Not: drop Add/Save
