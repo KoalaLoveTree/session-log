@@ -26,3 +26,4 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 - User skill `status` (`~/.grok/skills/status/SKILL.md`): `/status` leftover commit/push check
 - Compose + something at `:3000` (placeholder page, `127.0.0.1` only)
 - Dark page by default. Not: theme toggle, light theme, or a CSS framework
+- README is the clone path; personal notes in gitignored `GROK.md`
