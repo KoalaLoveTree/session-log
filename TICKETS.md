@@ -4,11 +4,9 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 
 ## Now
 
-- Separate test vs live (two stacks/data so tests do not land in the real log). Not: public deploy or extra apps.
+- Lists/bullets in the body and on the page. Not: a rich-text plugin or markdown flavor unless a ticket names one.
 
 ## Next
-
-- Lists/bullets in the body and on the page. Not: a rich-text plugin or markdown flavor unless a ticket names one.
 
 ## Later
 
@@ -38,3 +36,4 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 - Show newlines in the list (`white-space: pre-wrap`)
 - Refactor `api/src/main.rs`: qualify crate types at the use site. Not: extra crates or files
 - Edit an entry. Not: history, drafts, or a second page
+- Separate test vs live (two compose projects, ports 3000 / 3001). Not: a second source tree
