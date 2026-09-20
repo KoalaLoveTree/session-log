@@ -10,6 +10,9 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 - README for a stranger: clone URL, what it is in a few lines, one screenshot. Not: a marketing site.
 - `LICENSE` (MIT unless you pick another). Not: CLA or contributor docs.
+- Continue a list on Shift+Enter: if the current line is already `- ` / `* `, the next line starts with the same marker. Not: a rich-text plugin unless we pick one tomorrow.
+  - Phone: Enter is newline there — same “next bullet” idea if the line is already a list item
+  - Discuss: tiny JS in the textarea vs a text plugin
 
 ## Later
 
