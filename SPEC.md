@@ -8,7 +8,7 @@ Target for the session log. Implementation is sliced in `TICKETS.md`. Do not add
 docker compose up --build
 ```
 
-Open `http://localhost:3000`. No other ports for the stranger.
+Open `http://localhost:3000`. Phone on the same Wi‑Fi: `http://<lan-ip>:3000`. No other ports for the stranger.
 
 ## Folders
 
@@ -124,7 +124,7 @@ Three services:
 | --- | --- |
 | `db` | Postgres 16, healthcheck, named volume |
 | `api` | Build `api/`, run migrations on start, listen internally (`8080`) |
-| `web` | Build `web/`, serve on **3000** (live) or **3001** (test); `/` = UI, `/api` = proxy to `api` |
+| `web` | Build `web/`, publish **3000** (live) or **3001** (test) on all interfaces; `/` = UI, `/api` = proxy to `api` |
 
 Same compose file, two projects. Live: `.env` from `.env.example` (`COMPOSE_PROJECT_NAME=lr`, `HOST_PORT=3000`). Test: `.env.test` from `.env.test.example` (`lr-test`, `3001`). Each project gets its own `db-data` volume. `.env` from `.env.example`: `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`. `DATABASE_URL` for `api` is built from those. A local default password lives in `.env.example`, not in README prose.
 

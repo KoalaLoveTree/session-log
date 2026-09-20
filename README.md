@@ -11,7 +11,7 @@ cp .env.example .env
 docker compose up --build
 ```
 
-Open `http://localhost:3000`.
+Open `http://localhost:3000`. On a phone on the same Wi‑Fi: `http://<lan-ip>:3000` (on the PC, `hostname -I`).
 
 Test (other data, same code):
 

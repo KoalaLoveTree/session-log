@@ -24,7 +24,7 @@ services:
   web:
     build: ./web
     ports:
-      - "127.0.0.1:${HOST_PORT:-3000}:80"
+      - "${HOST_PORT:-3000}:80"
     depends_on:
       - api
 
