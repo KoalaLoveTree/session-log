@@ -27,3 +27,4 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 - README is the clone path; personal notes in gitignored `GROK.md`
 - First real `POST`/`GET` + the page. Not: OpenAPI, CI, extra routes, or LAN bind
 - Ticket loop: short plan, stop for go (`ticket` skill + `AGENTS.md`)
+- Center the page; Enter submits, Shift+Enter new line

@@ -5,6 +5,7 @@ Personal session log. One page: write a line, see recent entries.
 ## Run
 
 ```bash
+cp .env.example .env
 docker compose up --build
 ```
 
