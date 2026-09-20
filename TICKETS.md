@@ -24,3 +24,4 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 - User skill `ticket` (`~/.grok/skills/ticket/SKILL.md`)
 - User skill `commit` (`~/.grok/skills/commit/SKILL.md`): `/commit` after accept; push only if `origin` exists
 - Tight spec: `SPEC.md` (folders, two routes, one screen, compose)
+- User skill `status` (`~/.grok/skills/status/SKILL.md`): `/status` leftover commit/push check
