@@ -4,12 +4,18 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 
 ## Now
 
-- Phone on the same Wi‑Fi: publish `:3000` on all interfaces (not `127.0.0.1`), one README line with `http://<lan-ip>:3000`. Not: public deploy, HTTPS, extra ports, or a second hostname.
+- Delete an entry (clean test lines). Not: bulk wipe, undo, or a second page.
 
 ## Next
 
+- Show newlines in the list (`Shift+Enter` is stored, the page ignores them).
+- Edit an entry. Not: history, drafts, or a second page.
+- Separate test vs live (two stacks/data so tests do not land in the real log). Not: public deploy or extra apps.
+- Lists/bullets in the body and on the page. Not: a rich-text plugin or markdown flavor unless a ticket names one.
+
 ## Later
 
+- Phone on the same Wi‑Fi: publish `:3000` on all interfaces (not `127.0.0.1`), one README line with `http://<lan-ip>:3000`. Not: public deploy, HTTPS, extra ports, or a second hostname.
 - OpenAPI (`utoipa`), GitHub Actions, rustfmt/clippy in CI
 - Tags, search, rename `lr`
 - Weekly summary once there is data
@@ -28,3 +34,4 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 - First real `POST`/`GET` + the page. Not: OpenAPI, CI, extra routes, or LAN bind
 - Ticket loop: short plan, stop for go (`ticket` skill + `AGENTS.md`)
 - Center the page; Enter submits, Shift+Enter new line
+- User skill `task` (`~/.grok/skills/task/SKILL.md`): `/task` parks a discussion on this board; nudge once in chat

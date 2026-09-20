@@ -18,3 +18,4 @@ In: one page (text box, submit, recent list), one table (`id`, `body`, `created_
 Out: tags, search, auth, public deploy, LLM features, PHP, scrapers, GraphQL, extra features. Localhost is enough to run. GitHub is the public surface.
 
 Work items live in `TICKETS.md`. Do not start a ticket that is not **Now**.
+If a side idea shows up that is not the current ticket, mention `/task` once. Do not write the board until they run it.
