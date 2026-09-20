@@ -134,7 +134,7 @@ Three services:
 | `api` | Build `api/`, run migrations on start, listen internally (`8080`) |
 | `web` | Build `web/`, publish **3000** (live) or **3001** (test) on all interfaces; `/` = UI, `/api` = proxy to `api` |
 
-Same compose file, two projects. Live: `.env` from `.env.example` (`COMPOSE_PROJECT_NAME=lr`, `HOST_PORT=3000`). Test: `.env.test` from `.env.test.example` (`lr-test`, `3001`). Each project gets its own `db-data` volume. `.env` from `.env.example`: `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`. `DATABASE_URL` for `api` is built from those. A local default password lives in `.env.example`, not in README prose.
+Same compose file, two projects. Live: `.env` from `.env.example` (`COMPOSE_PROJECT_NAME=session-log`, `HOST_PORT=3000`). Test: `.env.test` from `.env.test.example` (`session-log-test`, `3001`). Each project gets its own `db-data` volume. `.env` from `.env.example`: `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`. `DATABASE_URL` for `api` is built from those. A local default password lives in `.env.example`, not in README prose.
 
 ## Out
 

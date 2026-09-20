@@ -1,4 +1,4 @@
-# lr
+# session log
 
 Before changing code, read `README.md` and `SPEC.md`. If `GROK.md` is present, read it too (local notes, not in git).
 

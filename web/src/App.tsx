@@ -268,7 +268,7 @@ export default function App() {
 
   return (
     <main>
-      <h1>lr</h1>
+      <h1>session log</h1>
       <p className="nav">
         <a href="/deleted">Deleted</a>
       </p>

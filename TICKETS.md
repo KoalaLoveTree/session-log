@@ -8,9 +8,9 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Next
 
-- Tags, search, rename `lr`
+- Tags, search
 - Weekly summary once there is data
-- Pretty LAN name (`lr.lan` / `.local`): router DNS or mDNS. Not app code; not for the stranger clone path.
+- Pretty LAN name (`session-log.lan` / `.local`): router DNS or mDNS. Not app code; not for the stranger clone path.
 
 ## Later
 
@@ -46,3 +46,4 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - Phone Enter is a newline; desktop Enter still submits. Not: drop Add/Save
 - OpenAPI + Swagger at `/api/docs` (dark CSS). Not: rustfmt, clippy, or GitHub
 - Local `rustfmt` / `clippy`. Not: Actions
+- Rename to session log (`session-log`). Not: tags/search

@@ -1,4 +1,4 @@
-# lr
+# session log
 
 Personal session log. One page: write a line, see recent entries.
 
