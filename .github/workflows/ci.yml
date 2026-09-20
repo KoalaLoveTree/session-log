@@ -1,0 +1,42 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: lr
+          POSTGRES_PASSWORD: lr
+          POSTGRES_DB: lr
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U lr -d lr"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: fmt
+        working-directory: api
+        run: cargo fmt --check
+      - name: clippy
+        working-directory: api
+        run: cargo clippy -- -D warnings
+      - name: test
+        working-directory: api
+        env:
+          DATABASE_URL: postgres://lr:lr@localhost:5432/lr
+        run: cargo test
+      - name: build
+        working-directory: api
+        run: cargo build --release

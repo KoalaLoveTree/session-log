@@ -138,4 +138,4 @@ Same compose file, two projects. Live: `.env` from `.env.example` (`COMPOSE_PROJ
 
 ## Out
 
-CI, extra folders for “structure,” CORS (not needed behind the proxy).
+Extra folders for “structure,” CORS (not needed behind the proxy).

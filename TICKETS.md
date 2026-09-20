@@ -4,11 +4,10 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Now
 
-- GitHub remote + Actions (fmt/clippy/test/build). Not: force-push or inventing a fake remote.
+- Tags, search
 
 ## Next
 
-- Tags, search
 - Weekly summary once there is data
 - Pretty LAN name (`session-log.lan` / `.local`): router DNS or mDNS. Not app code; not for the stranger clone path.
 
@@ -48,3 +47,4 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - Local `rustfmt` / `clippy`. Not: Actions
 - Rename to session log (`session-log`). Not: tags/search
 - API tests (`cargo test`). Not: unit tests or Playwright
+- GitHub Actions: fmt, clippy, test, build. Not: inventing origin (you added it)

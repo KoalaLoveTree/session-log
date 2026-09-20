@@ -38,3 +38,5 @@ DATABASE_URL=postgres://lr:lr@127.0.0.1:5433/lr cargo test
 - `SPEC.md` — v1 (page, table, two routes, compose)
 - `TICKETS.md` — work queue
 - [http://localhost:3000/api/docs](http://localhost:3000/api/docs) — API (Swagger)
+
+GitHub Actions (`ci`) runs fmt, clippy, `cargo test`, and `cargo build` on push.
