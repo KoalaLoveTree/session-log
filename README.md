@@ -22,6 +22,14 @@ docker compose --env-file .env.test up --build
 
 Open `http://localhost:3001`. Both can run at once.
 
+## Rust
+
+```bash
+cd api
+cargo fmt
+cargo clippy -- -D warnings
+```
+
 ## Docs
 
 - `SPEC.md` — v1 (page, table, two routes, compose)

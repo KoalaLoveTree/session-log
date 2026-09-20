@@ -4,11 +4,10 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Now
 
-- Local `rustfmt` / `clippy` (no GitHub yet). Not: Actions, extra crates.
+- GitHub remote + Actions (fmt/clippy/build). Not: force-push or inventing a fake remote.
 
 ## Next
 
-- GitHub remote + Actions (fmt/clippy/build). Not: force-push or inventing a fake remote.
 - Tags, search, rename `lr`
 - Weekly summary once there is data
 - Pretty LAN name (`lr.lan` / `.local`): router DNS or mDNS. Not app code; not for the stranger clone path.
@@ -46,3 +45,4 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - Phone on the same Wi‑Fi: `:3000` on all interfaces. Not: public deploy or a pretty hostname
 - Phone Enter is a newline; desktop Enter still submits. Not: drop Add/Save
 - OpenAPI + Swagger at `/api/docs` (dark CSS). Not: rustfmt, clippy, or GitHub
+- Local `rustfmt` / `clippy`. Not: Actions
