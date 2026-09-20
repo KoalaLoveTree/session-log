@@ -4,11 +4,10 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 
 ## Now
 
-- Tight spec: folders, two routes, one screen, compose. Not: implementation.
+- Compose + something at `:3000`. Not: real POST/GET, the full page, or extra services.
 
 ## Next
 
-- Compose + something at `:3000`.
 - First real `POST`/`GET` + the page.
 
 ## Later
@@ -22,3 +21,4 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 - Working files: `AGENTS.md` (four rules + v1 fence) + this list
 - User skill `ticket` (`~/.grok/skills/ticket/SKILL.md`)
 - User skill `commit` (`~/.grok/skills/commit/SKILL.md`): `/commit` after accept; push only if `origin` exists
+- Tight spec: `SPEC.md` (folders, two routes, one screen, compose)

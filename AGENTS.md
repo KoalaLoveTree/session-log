@@ -1,6 +1,6 @@
 # lr
 
-Before changing code, read `GROK.md` and `README.md`.
+Before changing code, read `GROK.md`, `README.md`, and `SPEC.md`.
 
 ## Contract
 

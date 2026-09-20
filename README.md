@@ -37,6 +37,8 @@ Artifact (mentor):
 
 **Done when** you have logged real evenings in it, and a stranger can clone + compose without you.
 
+Shape: `SPEC.md`.
+
 No tags, search, auth, public deploy, or LLM features in v1. Localhost is enough to *run*. GitHub is the public surface.
 
 ## Stack
