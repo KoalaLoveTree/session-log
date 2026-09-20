@@ -6,6 +6,55 @@ type Entry = {
   created_at: string;
 };
 
+type Marker = "-" | "*";
+
+type Block =
+  | { kind: "p"; text: string }
+  | { kind: "ul"; marker: Marker; items: string[] };
+
+function parseBody(body: string): Block[] {
+  const blocks: Block[] = [];
+  for (const line of body.split("\n")) {
+    const bullet = line.match(/^([*-]) (.*)$/);
+    if (bullet) {
+      const marker = bullet[1] as Marker;
+      const item = bullet[2];
+      const last = blocks[blocks.length - 1];
+      if (last && last.kind === "ul" && last.marker === marker) {
+        last.items.push(item);
+      } else {
+        blocks.push({ kind: "ul", marker, items: [item] });
+      }
+      continue;
+    }
+    const last = blocks[blocks.length - 1];
+    if (last && last.kind === "p") {
+      last.text += "\n" + line;
+    } else {
+      blocks.push({ kind: "p", text: line });
+    }
+  }
+  return blocks;
+}
+
+function EntryBody({ body }: { body: string }) {
+  return (
+    <div className="body">
+      {parseBody(body).map((block, index) =>
+        block.kind === "p" ? (
+          <p key={index}>{block.text}</p>
+        ) : (
+          <ul key={index} className={block.marker === "-" ? "dash" : "star"}>
+            {block.items.map((item, itemIndex) => (
+              <li key={itemIndex}>{item}</li>
+            ))}
+          </ul>
+        ),
+      )}
+    </div>
+  );
+}
+
 export default function App() {
   const [body, setBody] = useState("");
   const [entries, setEntries] = useState<Entry[] | null>(null);
@@ -181,7 +230,7 @@ export default function App() {
                   </div>
                 </form>
               ) : (
-                <p>{entry.body}</p>
+                <EntryBody body={entry.body} />
               )}
             </li>
           ))}

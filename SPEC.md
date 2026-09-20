@@ -93,6 +93,7 @@ One page, no client router.
 - Delete on a row → confirm “Are you sure?” → `DELETE /api/entries/{id}`, then reload the list
 - Edit on a row → textarea + Save / Cancel → `PUT /api/entries/{id}`, then reload the list
 - Do not show soft-deleted entries
+- Lines starting with `- ` show as disc bullets; `* ` as circle. Stored text stays plain. Edit shows the raw `- `/`* `.
 
 No tags, search, restore, or login.
 

@@ -74,9 +74,22 @@ time {
   color: #8a8076;
 }
 
-li p {
+.body p {
   margin: 0.25rem 0 0;
   white-space: pre-wrap;
+}
+
+.body ul {
+  margin: 0.25rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.body ul.dash {
+  list-style-type: disc;
+}
+
+.body ul.star {
+  list-style-type: circle;
 }
 
 li form {

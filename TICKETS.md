@@ -4,8 +4,6 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 
 ## Now
 
-- Lists/bullets in the body and on the page. Not: a rich-text plugin or markdown flavor unless a ticket names one.
-
 ## Next
 
 ## Later
@@ -37,3 +35,4 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 - Refactor `api/src/main.rs`: qualify crate types at the use site. Not: extra crates or files
 - Edit an entry. Not: history, drafts, or a second page
 - Separate test vs live (two compose projects, ports 3000 / 3001). Not: a second source tree
+- Lists/bullets: `- ` disc, `* ` circle. Not: a plugin or nested lists
