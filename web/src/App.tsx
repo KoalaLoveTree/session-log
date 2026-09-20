@@ -56,6 +56,8 @@ function EntryBody({ body }: { body: string }) {
 }
 
 export default function App() {
+  const deletedPage =
+    window.location.pathname.replace(/\/$/, "") === "/deleted";
   const [body, setBody] = useState("");
   const [entries, setEntries] = useState<Entry[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +66,9 @@ export default function App() {
   const [editBody, setEditBody] = useState("");
 
   async function load() {
-    const res = await fetch("/api/entries");
+    const res = await fetch(
+      deletedPage ? "/api/entries/deleted" : "/api/entries",
+    );
     if (!res.ok) {
       setError("could not load entries");
       return;
@@ -136,6 +140,30 @@ export default function App() {
     }
   }
 
+  async function onRestore(id: number) {
+    setError(null);
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/entries/${id}/restore`, { method: "POST" });
+      if (!res.ok) {
+        let message = "could not restore";
+        try {
+          const data: { error?: string } = await res.json();
+          message = data.error ?? message;
+        } catch {
+          /* ignore */
+        }
+        setError(message);
+        return;
+      }
+      await load();
+    } catch {
+      setError("could not restore");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   function startEdit(entry: Entry) {
     setError(null);
     setEditingId(entry.id);
@@ -166,9 +194,47 @@ export default function App() {
     }
   }
 
+  if (deletedPage) {
+    return (
+      <main>
+        <h1>Deleted</h1>
+        <p className="nav">
+          <a href="/">Back</a>
+        </p>
+        {error ? <p className="error">{error}</p> : null}
+        {entries === null ? null : entries.length === 0 ? (
+          <p>No deleted entries.</p>
+        ) : (
+          <ul>
+            {entries.map((entry) => (
+              <li key={entry.id}>
+                <div className="meta">
+                  <time dateTime={entry.created_at}>
+                    {new Date(entry.created_at).toLocaleString()}
+                  </time>
+                  <button
+                    type="button"
+                    onClick={() => onRestore(entry.id)}
+                    disabled={busy}
+                  >
+                    Restore
+                  </button>
+                </div>
+                <EntryBody body={entry.body} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </main>
+    );
+  }
+
   return (
     <main>
       <h1>lr</h1>
+      <p className="nav">
+        <a href="/deleted">Deleted</a>
+      </p>
       <form onSubmit={onSubmit}>
         <textarea
           value={body}

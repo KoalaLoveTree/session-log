@@ -1,20 +1,26 @@
 # Tickets
 
-Exactly one item in **Now**, with what / not. **Next** is capped at four. **Later** is a parking lot — no dates, do not start from here unless using the app hurt.
+Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** is a parking lot — no dates, do not start from here unless using the app hurt.
 
 ## Now
 
+- Hard-delete (purge) soft-deleted rows. Not: wipe visible entries.
+
 ## Next
 
-## Later
-
-- Restore a soft-deleted entry. Not: a trash page in this item; hide deleted until then.
-- Hard-delete (purge) soft-deleted rows. Not: wipe visible entries.
 - Phone on the same Wi‑Fi: publish `:3000` on all interfaces (not `127.0.0.1`), one README line with `http://<lan-ip>:3000`. Not: public deploy, HTTPS, extra ports, or a second hostname.
 - OpenAPI (`utoipa`), GitHub Actions, rustfmt/clippy in CI
 - Tags, search, rename `lr`
 - Weekly summary once there is data
 - Pretty LAN name (`lr.lan` / `.local`): router DNS or mDNS. Not app code; not for the stranger clone path.
+
+## Later
+
+- A real menu (log / deleted / whatever comes next). Not: React Router unless we pick it; we already have `/` and `/deleted` with one link each.
+- More than 50 notes: pagination, load more, or another shape. Not: pick the UI in this line.
+  - `GET /api/entries` and `GET /api/entries/deleted` both `LIMIT 50` today
+  - Discuss later: pages vs “load more” vs by date
+  - Same cap on the deleted URL
 
 ## Done
 
@@ -36,3 +42,4 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 - Edit an entry. Not: history, drafts, or a second page
 - Separate test vs live (two compose projects, ports 3000 / 3001). Not: a second source tree
 - Lists/bullets: `- ` disc, `* ` circle. Not: a plugin or nested lists
+- Restore soft-deleted entries at `/deleted`. Not: a menu or purge

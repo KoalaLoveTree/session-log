@@ -63,7 +63,11 @@ Request: `{ "body": "string" }`
 ### `GET /api/entries`
 
 - 200 `{ "entries": [ { "id", "body", "created_at" }, ... ] }`
-- Newest first. Cap 50. No query params in v1. Skip rows with `deleted_at` set.
+- Visible only. Newest first. Cap 50.
+
+### `GET /api/entries/deleted`
+
+- 200 `{ "entries": [ ... ] }` — soft-deleted only, newest `deleted_at` first, cap 50
 
 ### `PUT /api/entries/{id}`
 
@@ -80,22 +84,30 @@ Soft-delete: set `deleted_at`. Do not remove the row.
 - 204 if it was visible
 - 404 `{ "error": "not found" }` if missing or already deleted
 
+### `POST /api/entries/{id}/restore`
+
+Clear `deleted_at`.
+
+- 200 `{ "id", "body", "created_at" }`
+- 404 `{ "error": "not found" }` if missing or not deleted
+
 No other endpoints.
 
 ## Screen
 
-One page, no client router.
+Two URLs, one `App.tsx`, no React Router. nginx `try_files` serves `index.html` for both.
 
-- Text area + submit
+- `/` — text area, list, edit, delete
+- `/deleted` — `GET /api/entries/deleted`, Restore → `POST /api/entries/{id}/restore`. Empty: `No deleted entries.`
+- A single link each way. No menu yet.
 - Submit → `POST /api/entries`, then reload the list
 - List: `created_at` and `body` for each entry from `GET /api/entries`
 - Empty: `No entries yet.`
 - Delete on a row → confirm “Are you sure?” → `DELETE /api/entries/{id}`, then reload the list
 - Edit on a row → textarea + Save / Cancel → `PUT /api/entries/{id}`, then reload the list
-- Do not show soft-deleted entries
 - Lines starting with `- ` show as disc bullets; `* ` as circle. Stored text stays plain. Edit shows the raw `- `/`* `.
 
-No tags, search, restore, or login.
+No tags, search, login, or a nav menu.
 
 ## Compose
 
