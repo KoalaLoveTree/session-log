@@ -4,11 +4,9 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 
 ## Now
 
-- First real `POST`/`GET` + the page.
+- Phone on the same Wi‑Fi: publish `:3000` on all interfaces (not `127.0.0.1`), one README line with `http://<lan-ip>:3000`. Not: public deploy, HTTPS, extra ports, or a second hostname.
 
 ## Next
-
-- Phone on the same Wi‑Fi: publish `:3000` on all interfaces (not `127.0.0.1`), one README line with `http://<lan-ip>:3000`. Not: public deploy, HTTPS, extra ports, or a second hostname.
 
 ## Later
 
@@ -27,3 +25,5 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 - Compose + something at `:3000` (placeholder page, `127.0.0.1` only)
 - Dark page by default. Not: theme toggle, light theme, or a CSS framework
 - README is the clone path; personal notes in gitignored `GROK.md`
+- First real `POST`/`GET` + the page. Not: OpenAPI, CI, extra routes, or LAN bind
+- Ticket loop: short plan, stop for go (`ticket` skill + `AGENTS.md`)

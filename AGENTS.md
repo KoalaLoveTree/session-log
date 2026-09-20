@@ -5,7 +5,7 @@ Before changing code, read `README.md` and `SPEC.md`. If `GROK.md` is present, r
 ## Contract
 
 1. One ticket at a time. Say what / not.
-2. Model writes the patch. Human reviews it like a PR.
+2. Short plan (files, how, edges, not). Stop for go, unless they already said go. Then write the patch. Human reviews it like a PR.
 3. Run it. Use it. Next ticket comes from that.
 4. If the human cannot explain a file, it is not yours yet — delete or rewrite.
 
