@@ -9,12 +9,14 @@ Exactly one item in **Now**, with what / not. **Next** is capped at four. **Late
 ## Next
 
 - First real `POST`/`GET` + the page.
+- Phone on the same Wi‑Fi: publish `:3000` on all interfaces (not `127.0.0.1`), one README line with `http://<lan-ip>:3000`. Not: public deploy, HTTPS, extra ports, or a second hostname.
 
 ## Later
 
 - OpenAPI (`utoipa`), GitHub Actions, rustfmt/clippy in CI
 - Tags, search, rename `lr`
 - Weekly summary once there is data
+- Pretty LAN name (`lr.lan` / `.local`): router DNS or mDNS. Not app code; not for the stranger clone path.
 
 ## Done
 
