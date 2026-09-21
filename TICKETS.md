@@ -4,11 +4,6 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Now
 
-- Day of week on the displayed date. Not: relative time, a timezone picker, or changing the stored RFC3339 `created_at`.
-  - Today: `toLocaleString()` on `/` and `/deleted` (`web/src/App.tsx`)
-  - Display-only; both lists should match
-  - Keep the existing local date/time, just include weekday
-
 ## Next
 
 ## Later
@@ -52,3 +47,4 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - README for a stranger: clone URL, a few lines, one screenshot. Not: a marketing site
 - `LICENSE` (MIT). Not: CLA or contributor docs
 - Continue a list on Shift+Enter (`- ` / `* `). Empty marker leaves the list. Not: a plugin
+- Day of week on the displayed date. Not: relative time, timezone picker, or changing stored `created_at`

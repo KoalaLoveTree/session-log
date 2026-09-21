@@ -67,6 +67,18 @@ function continueList(
   };
 }
 
+function formatWhen(iso: string): string {
+  return new Date(iso).toLocaleString(undefined, {
+    weekday: "short",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}
+
 function EntryBody({ body }: { body: string }) {
   return (
     <div className="body">
@@ -286,7 +298,7 @@ export default function App() {
               <li key={entry.id}>
                 <div className="meta">
                   <time dateTime={entry.created_at}>
-                    {new Date(entry.created_at).toLocaleString()}
+                    {formatWhen(entry.created_at)}
                   </time>
                   <button
                     type="button"
@@ -338,7 +350,7 @@ export default function App() {
             <li key={entry.id}>
               <div className="meta">
                 <time dateTime={entry.created_at}>
-                  {new Date(entry.created_at).toLocaleString()}
+                  {formatWhen(entry.created_at)}
                 </time>
                 {editingId === entry.id ? null : (
                   <button
