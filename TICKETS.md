@@ -4,18 +4,21 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Now
 
-- Menu: log / deleted (and room for more). Not: React Router unless we pick it.
+- `LICENSE` (MIT unless you pick another). Not: CLA or contributor docs.
 
 ## Next
 
-- README for a stranger: clone URL, what it is in a few lines, one screenshot. Not: a marketing site.
-- `LICENSE` (MIT unless you pick another). Not: CLA or contributor docs.
 - Continue a list on Shift+Enter: if the current line is already `- ` / `* `, the next line starts with the same marker. Not: a rich-text plugin unless we pick one tomorrow.
   - Phone: Enter is newline there — same “next bullet” idea if the line is already a list item
   - Discuss: tiny JS in the textarea vs a text plugin
+- Day of week on the displayed date. Not: relative time, a timezone picker, or changing the stored RFC3339 `created_at`.
+  - Today: `toLocaleString()` on `/` and `/deleted` (`web/src/App.tsx`)
+  - Display-only; both lists should match
+  - Keep the existing local date/time, just include weekday
 
 ## Later
 
+- Menu: log / deleted (and room for more). Not: React Router unless we pick it.
 - Tags, search. Not: until there are enough notes to bother.
 - Weekly summary once there is data
 - Pretty LAN name (`session-log.lan` / `.local`): router DNS or mDNS. Not app code; not for the stranger clone path.
@@ -50,3 +53,5 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - API tests (`cargo test`). Not: unit tests or Playwright
 - GitHub Actions: fmt, clippy, test, build. Not: inventing origin (you added it)
 - Reordered the board: menu **Now**; tags/search **Later** until there are notes
+- Reordered the board: README **Now**; LICENSE, continue-list, weekday **Next**; menu **Later** until `/deleted` hurts
+- README for a stranger: clone URL, a few lines, one screenshot. Not: a marketing site

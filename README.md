@@ -2,6 +2,13 @@
 
 Personal session log. One page: write a line, see recent entries.
 
+```bash
+git clone https://github.com/KoalaLoveTree/session-log.git
+cd session-log
+```
+
+![The log: a text box and recent entries](screenshot.png)
+
 ## Run
 
 Live (your log):
