@@ -4,13 +4,12 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Now
 
-- `LICENSE` (MIT unless you pick another). Not: CLA or contributor docs.
-
-## Next
-
 - Continue a list on Shift+Enter: if the current line is already `- ` / `* `, the next line starts with the same marker. Not: a rich-text plugin unless we pick one tomorrow.
   - Phone: Enter is newline there — same “next bullet” idea if the line is already a list item
   - Discuss: tiny JS in the textarea vs a text plugin
+
+## Next
+
 - Day of week on the displayed date. Not: relative time, a timezone picker, or changing the stored RFC3339 `created_at`.
   - Today: `toLocaleString()` on `/` and `/deleted` (`web/src/App.tsx`)
   - Display-only; both lists should match
@@ -55,3 +54,4 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - Reordered the board: menu **Now**; tags/search **Later** until there are notes
 - Reordered the board: README **Now**; LICENSE, continue-list, weekday **Next**; menu **Later** until `/deleted` hurts
 - README for a stranger: clone URL, a few lines, one screenshot. Not: a marketing site
+- `LICENSE` (MIT). Not: CLA or contributor docs
