@@ -50,3 +50,4 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - Pretty LAN name `session-log.local` (Avahi, this machine). Not: app code, README, or router DNS
 - Autostart live stack on boot (user systemd `session-log`, linger). Not: test stack, app code, or README
 - README: Linux boot unit + linger. Not: shipping the machine-local unit, test stack, or Avahi
+- 24-hour time on displayed dates. Not: timezone picker, relative time, or changing stored `created_at`

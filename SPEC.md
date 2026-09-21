@@ -116,7 +116,7 @@ Two URLs, one `App.tsx`, no React Router. nginx `try_files` serves `index.html` 
 - `/deleted` — `GET /api/entries/deleted`, Restore → `POST /api/entries/{id}/restore`, Purge → `DELETE /api/entries/{id}/purge` (confirm). Empty: `No deleted entries.`
 - A single link each way. No menu yet.
 - Submit → `POST /api/entries`, then reload the list. Desktop: Enter submits, Shift+Enter newline. Phone (coarse pointer): Enter is a newline; submit with Add / Save. If that newline is on a line that already starts with `- ` or `* `, the next line starts with the same marker; an empty marker line leaves the list.
-- List: `created_at` (local date/time with weekday) and `body` for each entry from `GET /api/entries`
+- List: `created_at` (local date/time with weekday, 24-hour clock) and `body` for each entry from `GET /api/entries`
 - Empty: `No entries yet.`
 - Delete on a row → confirm “Are you sure?” → `DELETE /api/entries/{id}`, then reload the list
 - Edit on a row → textarea + Save / Cancel → `PUT /api/entries/{id}`, then reload the list
