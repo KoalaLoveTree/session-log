@@ -11,7 +11,6 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - Menu: log / deleted (and room for more). Not: React Router unless we pick it.
 - Tags, search. Not: until there are enough notes to bother.
 - Weekly summary once there is data
-- Pretty LAN name (`session-log.lan` / `.local`): router DNS or mDNS. Not app code; not for the stranger clone path.
 - More than 50 notes: pagination, load more, or another shape. Not: pick the UI in this line.
   - `GET /api/entries` and `GET /api/entries/deleted` both `LIMIT 50` today
   - Discuss later: pages vs “load more” vs by date
@@ -48,3 +47,4 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - `LICENSE` (MIT). Not: CLA or contributor docs
 - Continue a list on Shift+Enter (`- ` / `* `). Empty marker leaves the list. Not: a plugin
 - Day of week on the displayed date. Not: relative time, timezone picker, or changing stored `created_at`
+- Pretty LAN name `session-log.local` (Avahi, this machine). Not: app code, README, or router DNS
