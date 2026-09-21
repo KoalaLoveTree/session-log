@@ -37,6 +37,36 @@ function parseBody(body: string): Block[] {
   return blocks;
 }
 
+function continueList(
+  value: string,
+  start: number,
+  end: number,
+): { value: string; cursor: number } | null {
+  const lineStart = value.lastIndexOf("\n", start - 1) + 1;
+  const lineToCaret = value.slice(lineStart, start);
+  const match = lineToCaret.match(/^([*-] )/);
+  if (!match) {
+    return null;
+  }
+  const marker = match[1];
+  const lineEnd = value.indexOf("\n", start);
+  const fullLine = value.slice(
+    lineStart,
+    lineEnd === -1 ? value.length : lineEnd,
+  );
+  if (fullLine === marker && start === end) {
+    return {
+      value: value.slice(0, lineStart) + value.slice(start),
+      cursor: lineStart,
+    };
+  }
+  const insert = "\n" + marker;
+  return {
+    value: value.slice(0, start) + insert + value.slice(end),
+    cursor: start + insert.length,
+  };
+}
+
 function EntryBody({ body }: { body: string }) {
   return (
     <div className="body">
@@ -81,15 +111,31 @@ export default function App() {
     load().catch(() => setError("could not load entries"));
   }, []);
 
-  function onKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-    if (event.key !== "Enter" || event.shiftKey || event.nativeEvent.isComposing) {
+  function onKeyDown(
+    event: KeyboardEvent<HTMLTextAreaElement>,
+    setValue: (value: string) => void,
+  ) {
+    if (event.key !== "Enter" || event.nativeEvent.isComposing) {
       return;
     }
-    if (window.matchMedia("(pointer: coarse)").matches) {
+    const insertingNewline =
+      event.shiftKey || window.matchMedia("(pointer: coarse)").matches;
+    if (!insertingNewline) {
+      event.preventDefault();
+      event.currentTarget.form?.requestSubmit();
+      return;
+    }
+    const el = event.currentTarget;
+    const edit = continueList(el.value, el.selectionStart, el.selectionEnd);
+    if (!edit) {
       return;
     }
     event.preventDefault();
-    event.currentTarget.form?.requestSubmit();
+    setValue(edit.value);
+    const pos = edit.cursor;
+    requestAnimationFrame(() => {
+      el.setSelectionRange(pos, pos);
+    });
   }
 
   async function onSubmit(event: FormEvent) {
@@ -276,7 +322,7 @@ export default function App() {
         <textarea
           value={body}
           onChange={(event) => setBody(event.target.value)}
-          onKeyDown={onKeyDown}
+          onKeyDown={(event) => onKeyDown(event, setBody)}
           rows={4}
         />
         <button type="submit" disabled={busy}>
@@ -316,7 +362,7 @@ export default function App() {
                   <textarea
                     value={editBody}
                     onChange={(event) => setEditBody(event.target.value)}
-                    onKeyDown={onKeyDown}
+                    onKeyDown={(event) => onKeyDown(event, setEditBody)}
                     rows={4}
                   />
                   <div className="actions">
