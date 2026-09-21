@@ -29,6 +29,38 @@ docker compose --env-file .env.test up --build
 
 Open `http://localhost:3001`. Both can run at once.
 
+## Start on boot (Linux)
+
+Optional. After live compose works, a user systemd unit can start it at boot.
+
+Write `~/.config/systemd/user/session-log.service`. Set `WorkingDirectory` to this clone:
+
+```
+[Unit]
+Description=session-log live compose stack
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/path/to/session-log
+ExecStart=/usr/bin/docker compose up -d
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
+```
+
+```bash
+systemctl --user daemon-reload
+systemctl --user enable --now session-log.service
+loginctl enable-linger
+```
+
+Your user needs to be able to run `docker` (often the `docker` group). Docker itself should start at boot (`systemctl enable docker`).
+
+Linger starts **your** user services at boot, even at the login screen, before anyone unlocks the session.
+
 ## Rust
 
 ```bash

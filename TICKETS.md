@@ -48,3 +48,5 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - Continue a list on Shift+Enter (`- ` / `* `). Empty marker leaves the list. Not: a plugin
 - Day of week on the displayed date. Not: relative time, timezone picker, or changing stored `created_at`
 - Pretty LAN name `session-log.local` (Avahi, this machine). Not: app code, README, or router DNS
+- Autostart live stack on boot (user systemd `session-log`, linger). Not: test stack, app code, or README
+- README: Linux boot unit + linger. Not: shipping the machine-local unit, test stack, or Avahi
