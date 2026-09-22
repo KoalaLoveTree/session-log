@@ -15,6 +15,15 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
   - `GET /api/entries` and `GET /api/entries/deleted` both `LIMIT 50` today
   - Discuss later: pages vs “load more” vs by date
   - Same cap on the deleted URL
+- Phone keeps the log when the PC is off, and syncs when it is back. Not: the existing LAN page, auth, or a public deploy.
+  - Local copy on the phone; a pending queue sends creates and edits when the server is reachable
+  - Same note edited on both sides: show both texts, you write the one that remains. A delete on one side and an edit on the other waits for that same step
+  - A note only one side has syncs with no merge screen. Created time is when you wrote it, not when the queue flushed
+- Mentor questions and dreams as their own lists. Not: mixing them into the session log.
+  - Same shape as a log note: text and a time
+  - Hang off the menu item above (log / deleted, room for more)
+- Anime watched, as its own list. Not: titles in the session log, or picking the fancy layout now.
+  - A title plus a status is enough to remember. The look waits until you want to browse it
 
 ## Done
 
