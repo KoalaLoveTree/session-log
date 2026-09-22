@@ -74,7 +74,7 @@ DATABASE_URL=postgres://lr:lr@127.0.0.1:5433/lr cargo test
 
 ## Docs
 
-- `SPEC.md` — v1 (page, table, two routes, compose)
+- `SPEC.md` — how the modules meet (`api/SPEC.md` routes, `web/SPEC.md` screen)
 - `TICKETS.md` — work queue
 - [http://localhost:3000/api/docs](http://localhost:3000/api/docs) — API (Swagger)
 
