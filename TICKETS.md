@@ -4,26 +4,40 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Now
 
+- A note a second copy can hold. Not: the phone app, new lists, or a public host.
+  - An id chosen when the note is written, so the phone can create one while the PC is off. Notes already stored keep their identity
+  - `updated_at` so both sides can see that a note changed. It does not choose which text remains
+  - A full read of every row, including soft-deleted ones. The on-screen lists stay capped at 50
+  - The page still needs the PC on
+
 ## Next
+
+- Android app: the log in SQLite, synced by opening the app. Not: Postgres on the phone, a second screen, a separate repo, auth, or a public deploy.
+  - The phone is the side that connects. Opening the app sends notes the PC is missing and pulls notes the phone is missing
+  - Written on the phone: SQLite first, then the PC. Written on the site: Postgres, and the phone pulls it on the next open
+  - Both sides edited the same note: keep both texts. Neither side overwrites the other during sync
+  - A note only one side has syncs with no merge screen. Created time is when you wrote it, not when the sync finished
+- Merge on the phone and on the PC site. Not: an automatic winner.
+  - Either side shows both texts. You write the one that remains, and the sync carries it to the other side
+  - A delete on one side and an edit on the other waits for that same step
+- While that app is open, the PC can tell the open connection to pull again. Not: the PC calling the phone, and not a sync with the app closed.
 
 ## Later
 
-- Menu: log / deleted (and room for more). Not: React Router unless we pick it.
+- The app syncs on Wi-Fi without being opened. Not: the first phone version. The phone still starts the connection.
+- Menu: log / deleted, and room for more lists. Not: React Router unless we pick it.
+- Mentor questions and dreams as their own lists. Not: mixing them into the session log.
+  - Text and a time. Same id and `updated_at` as a log note, so the backup includes them from the first row
+  - Hang off the menu above
+- Anime watched, as its own list. Not: titles in the session log, or the browsing layout.
+  - A title plus a status. Same id and `updated_at`
+  - The look waits until the plain list is annoying to scan
 - Tags, search. Not: until there are enough notes to bother.
 - Weekly summary once there is data
 - More than 50 notes: pagination, load more, or another shape. Not: pick the UI in this line.
   - `GET /api/entries` and `GET /api/entries/deleted` both `LIMIT 50` today
   - Discuss later: pages vs “load more” vs by date
   - Same cap on the deleted URL
-- Phone keeps the log when the PC is off, and syncs when it is back. Not: the existing LAN page, auth, or a public deploy.
-  - Local copy on the phone; a pending queue sends creates and edits when the server is reachable
-  - Same note edited on both sides: show both texts, you write the one that remains. A delete on one side and an edit on the other waits for that same step
-  - A note only one side has syncs with no merge screen. Created time is when you wrote it, not when the queue flushed
-- Mentor questions and dreams as their own lists. Not: mixing them into the session log.
-  - Same shape as a log note: text and a time
-  - Hang off the menu item above (log / deleted, room for more)
-- Anime watched, as its own list. Not: titles in the session log, or picking the fancy layout now.
-  - A title plus a status is enough to remember. The look waits until you want to browse it
 
 ## Done
 
