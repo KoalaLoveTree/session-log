@@ -4,19 +4,14 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Now
 
-- A note a second copy can hold. Not: the phone app, new lists, or a public host.
-  - An id chosen when the note is written, so the phone can create one while the PC is off. Notes already stored keep their identity
-  - `updated_at` so both sides can see that a note changed. It does not choose which text remains
-  - A full read of every row, including soft-deleted ones. The on-screen lists stay capped at 50
-  - The page still needs the PC on
-
-## Next
-
 - Android app: the log in SQLite, synced by opening the app. Not: Postgres on the phone, a second screen, a separate repo, auth, or a public deploy.
   - The phone is the side that connects. Opening the app sends notes the PC is missing and pulls notes the phone is missing
   - Written on the phone: SQLite first, then the PC. Written on the site: Postgres, and the phone pulls it on the next open
   - Both sides edited the same note: keep both texts. Neither side overwrites the other during sync
   - A note only one side has syncs with no merge screen. Created time is when you wrote it, not when the sync finished
+
+## Next
+
 - Merge on the phone and on the PC site. Not: an automatic winner.
   - Either side shows both texts. You write the one that remains, and the sync carries it to the other side
   - A delete on one side and an edit on the other waits for that same step
@@ -74,3 +69,4 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 - Autostart live stack on boot (user systemd `session-log`, linger). Not: test stack, app code, or README
 - README: Linux boot unit + linger. Not: shipping the machine-local unit, test stack, or Avahi
 - 24-hour time on displayed dates. Not: timezone picker, relative time, or changing stored `created_at`
+- A note a second copy can hold: writer-chosen id and `updated_at`. Not: the phone app, a sync feed, or a public host

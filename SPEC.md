@@ -42,9 +42,10 @@ Postgres. One table `entries`:
 
 | Column | Type | Notes |
 | --- | --- | --- |
-| `id` | `BIGSERIAL` PK | |
+| `id` | `TEXT` PK | Chosen when the note is written. Rows already stored keep their id, as text (`1`, `2`, …). A new id is a lowercase UUID (`8-4-4-4-12` hex) |
 | `body` | `TEXT NOT NULL` | trimmed; reject empty |
-| `created_at` | `TIMESTAMPTZ NOT NULL` | default `now()` |
+| `created_at` | `TIMESTAMPTZ NOT NULL` | default `now()`; unchanged by edit, delete, and restore |
+| `updated_at` | `TIMESTAMPTZ NOT NULL` | set on create, edit, soft-delete, and restore. It does not choose which text remains |
 | `deleted_at` | `TIMESTAMPTZ NULL` | set on soft-delete; hidden from the list |
 
 No other tables.
@@ -53,42 +54,48 @@ No other tables.
 
 Same origin: the browser only talks to `:3000`. The web container proxies `/api` to the api container.
 
+An entry is `{ "id", "body", "created_at", "updated_at", "deleted_at" }`. Times are RFC3339. `deleted_at` is `null` while the note is on the log.
+
 ### `POST /api/entries`
 
-Request: `{ "body": "string" }`
+Request: `{ "id": "string", "body": "string" }`
 
-- 201 `{ "id": number, "body": string, "created_at": "<RFC3339>" }`
-- 400 `{ "error": "body must not be empty" }` if missing, empty, or whitespace-only
+- 201 the entry. `created_at` and `updated_at` are the insert time. `deleted_at` is `null`
+- 400 `{ "error": "id must be a uuid" }` if `id` is missing or not a lowercase UUID
+- 400 `{ "error": "body must not be empty" }` if `body` is missing, empty, or whitespace-only
+- 409 `{ "error": "id already used" }` if that `id` is already stored
 
 ### `GET /api/entries`
 
-- 200 `{ "entries": [ { "id", "body", "created_at" }, ... ] }`
+- 200 `{ "entries": [ entry, ... ] }`
 - Visible only. Newest first. Cap 50.
 
 ### `GET /api/entries/deleted`
 
-- 200 `{ "entries": [ ... ] }` — soft-deleted only, newest `deleted_at` first, cap 50
+- 200 `{ "entries": [ entry, ... ] }` — soft-deleted only, newest `deleted_at` first, cap 50
 
 ### `PUT /api/entries/{id}`
 
 Request: `{ "body": "string" }`
 
-- 200 `{ "id", "body", "created_at" }` — `created_at` unchanged
+- 200 the entry — `created_at` unchanged, `updated_at` set to this write
 - 400 `{ "error": "body must not be empty" }` if missing, empty, or whitespace-only
 - 404 `{ "error": "not found" }` if missing or already deleted
 
+`id` in the path is the stored id. An older note uses its text id, such as `7`.
+
 ### `DELETE /api/entries/{id}`
 
-Soft-delete: set `deleted_at`. Do not remove the row.
+Soft-delete: set `deleted_at` and `updated_at`. Do not remove the row.
 
 - 204 if it was visible
 - 404 `{ "error": "not found" }` if missing or already deleted
 
 ### `POST /api/entries/{id}/restore`
 
-Clear `deleted_at`.
+Clear `deleted_at`. Set `updated_at`.
 
-- 200 `{ "id", "body", "created_at" }`
+- 200 the entry
 - 404 `{ "error": "not found" }` if missing or not deleted
 
 ### `DELETE /api/entries/{id}/purge`
@@ -115,8 +122,8 @@ Two URLs, one `App.tsx`, no React Router. nginx `try_files` serves `index.html` 
 - `/` — text area, list, edit, delete
 - `/deleted` — `GET /api/entries/deleted`, Restore → `POST /api/entries/{id}/restore`, Purge → `DELETE /api/entries/{id}/purge` (confirm). Empty: `No deleted entries.`
 - A single link each way. No menu yet.
-- Submit → `POST /api/entries`, then reload the list. Desktop: Enter submits, Shift+Enter newline. Phone (coarse pointer): Enter is a newline; submit with Add / Save. If that newline is on a line that already starts with `- ` or `* `, the next line starts with the same marker; an empty marker line leaves the list.
-- List: `created_at` (local date/time with weekday, 24-hour clock) and `body` for each entry from `GET /api/entries`
+- Submit → the page chooses a lowercase UUID and `POST /api/entries` with that `id` and the `body`, then reloads the list. The id is built with `crypto.getRandomValues`, so Add works on the phone over plain `http://`. Desktop: Enter submits, Shift+Enter newline. Phone (coarse pointer): Enter is a newline; submit with Add / Save. If that newline is on a line that already starts with `- ` or `* `, the next line starts with the same marker; an empty marker line leaves the list.
+- List: `created_at` (local date/time with weekday, 24-hour clock) and `body` for each entry from `GET /api/entries`. `updated_at` and `deleted_at` are not shown. The page does not keep its own copy of the log.
 - Empty: `No entries yet.`
 - Delete on a row → confirm “Are you sure?” → `DELETE /api/entries/{id}`, then reload the list
 - Edit on a row → textarea + Save / Cancel → `PUT /api/entries/{id}`, then reload the list

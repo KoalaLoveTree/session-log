@@ -1,10 +1,21 @@
 import { FormEvent, KeyboardEvent, useEffect, useState } from "react";
 
 type Entry = {
-  id: number;
+  id: string;
   body: string;
   created_at: string;
 };
+
+function newId(): string {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = Array.from(bytes, (byte) =>
+    byte.toString(16).padStart(2, "0"),
+  ).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
 
 type Marker = "-" | "*";
 
@@ -105,7 +116,7 @@ export default function App() {
   const [entries, setEntries] = useState<Entry[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [editBody, setEditBody] = useState("");
 
   async function load() {
@@ -159,7 +170,7 @@ export default function App() {
       const res = await fetch("/api/entries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body }),
+        body: JSON.stringify({ id: newId(), body }),
       });
       const data: { error?: string } = await res.json();
       if (!res.ok) {
@@ -175,7 +186,7 @@ export default function App() {
     }
   }
 
-  async function onDelete(id: number) {
+  async function onDelete(id: string) {
     if (!confirm("Are you sure?")) {
       return;
     }
@@ -202,7 +213,7 @@ export default function App() {
     }
   }
 
-  async function onRestore(id: number) {
+  async function onRestore(id: string) {
     setError(null);
     setBusy(true);
     try {
@@ -226,7 +237,7 @@ export default function App() {
     }
   }
 
-  async function onPurge(id: number) {
+  async function onPurge(id: string) {
     if (!confirm("Are you sure?")) {
       return;
     }
@@ -259,7 +270,7 @@ export default function App() {
     setEditBody(entry.body);
   }
 
-  async function onSaveEdit(event: FormEvent, id: number) {
+  async function onSaveEdit(event: FormEvent, id: string) {
     event.preventDefault();
     setError(null);
     setBusy(true);
