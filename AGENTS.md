@@ -9,6 +9,8 @@ Before changing code, read `README.md` and `SPEC.md`. If `GROK.md` is present, r
 3. Run it. Use it. Next ticket comes from that.
 4. If the human cannot explain a file, it is not yours yet — delete or rewrite.
 
+A new slice is a spec ticket, then implementation, then tests. The ticket skill is the procedure. OpenAPI attributes go in the implementation ticket.
+
 Do not paste “build the app” and accept a 40-file dump.
 
 ## v1 fence

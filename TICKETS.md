@@ -4,17 +4,22 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Now
 
-- Android app: the log in SQLite, synced by opening the app. Not: Postgres on the phone, a second screen, a separate repo, auth, or a public deploy.
-  - The phone is the side that connects. Opening the app sends notes the PC is missing and pulls notes the phone is missing
-  - Written on the phone: SQLite first, then the PC. Written on the site: Postgres, and the phone pulls it on the next open
-  - Both sides edited the same note: keep both texts. Neither side overwrites the other during sync
-  - A note only one side has syncs with no merge screen. Created time is when you wrote it, not when the sync finished
+- Split the spec into module specs before any Android behavior. Not: sync rules, the phone app, tests, or OpenAPI.
+  - Shared note fields and who connects stay in `SPEC.md`. Existing routes move to `api/SPEC.md`, the screen to `web/SPEC.md`.
+  - `android/SPEC.md` appears with the sync slice, which is the next ticket.
 
 ## Next
 
+- Android sync shape in the specs. Not: the phone app, tests, or OpenAPI.
+  - The phone connects. Opening the app sends notes the PC is missing and pulls notes the phone is missing.
+  - Written on the phone: SQLite first, then the PC. Written on the site: Postgres, and the phone pulls it on the next open.
+  - Both sides edited the same note: keep both texts. Neither side overwrites the other during sync.
+  - A note only one side has syncs with no merge screen. Created time is when you wrote it, not when the sync finished.
+- Implement that sync. Not: the merge screen, or tests. OpenAPI attributes on any route this adds.
+- Tests for that sync. Not: new behavior, or phone UI tests.
 - Merge on the phone and on the PC site. Not: an automatic winner.
-  - Either side shows both texts. You write the one that remains, and the sync carries it to the other side
-  - A delete on one side and an edit on the other waits for that same step
+  - Either side shows both texts. You write the one that remains, and the sync carries it to the other side.
+  - A delete on one side and an edit on the other waits for that same step.
 - While that app is open, the PC can tell the open connection to pull again. Not: the PC calling the phone, and not a sync with the app closed.
 
 ## Later
