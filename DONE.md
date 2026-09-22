@@ -1,0 +1,39 @@
+# Done
+
+Finished tickets, oldest first. Append the next one at the bottom.
+
+- Working files: `AGENTS.md` (four rules + v1 fence) + this list
+- Tight spec: `SPEC.md` (folders, two routes, one screen, compose)
+- Compose + something at `:3000` (placeholder page, `127.0.0.1` only)
+- Dark page by default. Not: theme toggle, light theme, or a CSS framework
+- README is the clone path; personal notes in gitignored `GROK.md`
+- First real `POST`/`GET` + the page. Not: OpenAPI, CI, extra routes, or LAN bind
+- Ticket loop: short plan, stop for go (`AGENTS.md`)
+- Center the page; Enter submits, Shift+Enter new line
+- Soft-delete an entry with confirm. Not: purge, restore UI, or showing deleted rows
+- Show newlines in the list (`white-space: pre-wrap`)
+- Refactor `api/src/main.rs`: qualify crate types at the use site. Not: extra crates or files
+- Edit an entry. Not: history, drafts, or a second page
+- Separate test vs live (two compose projects, ports 3000 / 3001). Not: a second source tree
+- Lists/bullets: `- ` disc, `* ` circle. Not: a plugin or nested lists
+- Restore soft-deleted entries at `/deleted`. Not: a menu or purge
+- Purge a soft-deleted row (`DELETE /api/entries/{id}/purge`). Not: wipe visible entries
+- Phone on the same Wi‑Fi: `:3000` on all interfaces. Not: public deploy or a pretty hostname
+- Phone Enter is a newline; desktop Enter still submits. Not: drop Add/Save
+- OpenAPI + Swagger at `/api/docs` (dark CSS). Not: rustfmt, clippy, or GitHub
+- Local `rustfmt` / `clippy`. Not: Actions
+- Rename to session log (`session-log`). Not: tags/search
+- API tests (`cargo test`). Not: unit tests or Playwright
+- GitHub Actions: fmt, clippy, test, build. Not: inventing origin (you added it)
+- Reordered the board: menu **Now**; tags/search **Later** until there are notes
+- Reordered the board: README **Now**; LICENSE, continue-list, weekday **Next**; menu **Later** until `/deleted` hurts
+- README for a stranger: clone URL, a few lines, one screenshot. Not: a marketing site
+- `LICENSE` (MIT). Not: CLA or contributor docs
+- Continue a list on Shift+Enter (`- ` / `* `). Empty marker leaves the list. Not: a plugin
+- Day of week on the displayed date. Not: relative time, timezone picker, or changing stored `created_at`
+- Pretty LAN name `session-log.local` (Avahi, this machine). Not: app code, README, or router DNS
+- Autostart live stack on boot (user systemd `session-log`, linger). Not: test stack, app code, or README
+- README: Linux boot unit + linger. Not: shipping the machine-local unit, test stack, or Avahi
+- 24-hour time on displayed dates. Not: timezone picker, relative time, or changing stored `created_at`
+- A note a second copy can hold: writer-chosen id and `updated_at`. Not: the phone app, a sync feed, or a public host
+- Split the spec into module specs (`api/SPEC.md`, `web/SPEC.md`). Shared note fields and who connects stay in `SPEC.md`. Not: sync rules, the phone app, tests, OpenAPI, or `android/SPEC.md`
