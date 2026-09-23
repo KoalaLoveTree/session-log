@@ -4,11 +4,10 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Now
 
-- Split `api/src/lib.rs` into `error`, `entries`, `sync`, and `doc`. `lib.rs` wires the routes. Not: a `db` module, new routes, or a behavior change.
+- Tests for that sync. Not: new behavior, or phone UI tests.
 
 ## Next
 
-- Tests for that sync. Not: new behavior, or phone UI tests.
 - Merge on the phone and on the PC site. Not: an automatic winner.
   - Either side shows both texts. You write the one that remains, and the sync carries it to the other side.
   - A delete on one side and an edit on the other waits for that same step.
