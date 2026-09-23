@@ -46,7 +46,7 @@ Request: `{ "body": "string" }`
 - 400 `{ "error": "body must not be empty" }` if missing, empty, or whitespace-only
 - 404 `{ "error": "not found" }` if missing or already deleted
 
-`id` in the path is the stored id. An older note uses its text id, such as `7`.
+`id` in the path is the stored UUID.
 
 ### `DELETE /api/entries/{id}`
 

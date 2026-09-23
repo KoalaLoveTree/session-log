@@ -37,3 +37,4 @@ Finished tickets, oldest first. Append the next one at the bottom.
 - 24-hour time on displayed dates. Not: timezone picker, relative time, or changing stored `created_at`
 - A note a second copy can hold: writer-chosen id and `updated_at`. Not: the phone app, a sync feed, or a public host
 - Split the spec into module specs (`api/SPEC.md`, `web/SPEC.md`). Shared note fields and who connects stay in `SPEC.md`. Not: sync rules, the phone app, tests, OpenAPI, or `android/SPEC.md`
+- Every stored id is a lowercase UUID. A stored id in any other form is replaced once with a new UUID; the other fields stay. Not: the migration, the sync shape, tests, or OpenAPI.

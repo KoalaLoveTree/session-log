@@ -4,14 +4,17 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Now
 
+- Replace each stored id that is not a lowercase UUID with a new UUID. Not: the sync shape, tests, or OpenAPI.
+  - One migration. `body`, `created_at`, `updated_at`, and `deleted_at` stay.
+  - A new note still gets its id from the writer.
+
+## Next
+
 - Android sync shape in the specs. Not: the phone app, tests, or OpenAPI.
   - The phone connects. Opening the app sends notes the PC is missing and pulls notes the phone is missing.
   - Written on the phone: SQLite first, then the PC. Written on the site: Postgres, and the phone pulls it on the next open.
   - Both sides edited the same note: keep both texts. Neither side overwrites the other during sync.
   - A note only one side has syncs with no merge screen. Created time is when you wrote it, not when the sync finished.
-
-## Next
-
 - Implement that sync. Not: the merge screen, or tests. OpenAPI attributes on any route this adds.
 - Tests for that sync. Not: new behavior, or phone UI tests.
 - Merge on the phone and on the PC site. Not: an automatic winner.

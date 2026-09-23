@@ -37,7 +37,7 @@ An entry is `{ "id", "body", "created_at", "updated_at", "deleted_at" }`. Times 
 
 | Field | Rules |
 | --- | --- |
-| `id` | Chosen when the note is written. Rows already stored keep their id, as text (`1`, `2`, …). A new id is a lowercase UUID (`8-4-4-4-12` hex) |
+| `id` | Chosen when the note is written. A lowercase UUID (`8-4-4-4-12` hex). A stored id in any other form is replaced once with a new UUID. The other fields stay |
 | `body` | trimmed; reject empty |
 | `created_at` | unchanged by edit, delete, and restore |
 | `updated_at` | set on create, edit, soft-delete, and restore. It does not choose which text remains |
