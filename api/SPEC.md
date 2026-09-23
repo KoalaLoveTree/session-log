@@ -1,10 +1,10 @@
 # API
 
-The table and the routes. The note is in `SPEC.md`.
+The table, the routes, and sync state. The note and the sync rules are in `SPEC.md`.
 
 ## Data
 
-Postgres. One table `entries`. Columns store the note in `SPEC.md`. `created_at` defaults to `now()`.
+Postgres. One table `entries`. Note columns store the note in `SPEC.md`. `created_at` defaults to `now()`.
 
 | Column | Type |
 | --- | --- |
@@ -15,6 +15,12 @@ Postgres. One table `entries`. Columns store the note in `SPEC.md`. `created_at`
 | `deleted_at` | `TIMESTAMPTZ NULL` |
 
 No other tables.
+
+## Sync state
+
+Stored on the `entries` row, beside the note. Not a note field. The routes below do not return it.
+
+Each note has the last body both sides agreed on. When both sides have changed that note, the row also holds the other body. The note’s `body` stays.
 
 ## Routes
 
@@ -32,7 +38,7 @@ Request: `{ "id": "string", "body": "string" }`
 ### `GET /api/entries`
 
 - 200 `{ "entries": [ entry, ... ] }`
-- Visible only. Newest first. Cap 50.
+- Visible only. Newest first. Cap 50. Not the phone’s sync pull.
 
 ### `GET /api/entries/deleted`
 
