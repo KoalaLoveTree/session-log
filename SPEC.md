@@ -42,7 +42,7 @@ An entry is `{ "id", "body", "created_at", "updated_at", "deleted_at" }`. Times 
 | `id` | Chosen when the note is written. A lowercase UUID (`8-4-4-4-12` hex). A stored id in any other form is replaced once with a new UUID. The other fields stay |
 | `body` | trimmed; reject empty |
 | `created_at` | when the note was written. Unchanged by edit, delete, restore, and sync |
-| `updated_at` | set on create, edit, soft-delete, and restore. It does not choose which text remains |
+| `updated_at` | set on create, edit, soft-delete, restore, and an agreed sync. It does not choose between two parallel edits |
 | `deleted_at` | set on soft-delete; hidden from the list |
 
 ## Who connects
@@ -51,14 +51,17 @@ Same origin: the browser only talks to the web origin. The web container proxies
 
 ## Sync
 
-The phone opens the connection when its app opens. Compare each note to the last body both sides agreed on.
+The phone opens the connection when its app opens. Each note remembers `synced_at`: the PC clock time of the last sync that agreed on it. `synced_at` is null until then. A copy is still that version when `updated_at` equals `synced_at`. A local edit sets `updated_at` after `synced_at`. The phone does that when its own clock is behind.
 
-- Only one side has it: that copy is sent across. No merge screen.
-- Only one side changed: that body is sent across, and it becomes the body they agree on.
-- Both sides changed: each side keeps its `body` and keeps the other text beside the note.
-- Both bodies are the same: that body is the one they agree on.
+- Only one side has it, and its id is not a stored purge: that copy is sent across. No merge screen.
+- Only one side is newer than `synced_at`: that copy is kept, including a soft-delete. Both sides then store the same `updated_at` and `synced_at`, from the PC clock. The old text is not kept.
+- Both sides are newer and the texts differ: each side keeps its `body` and keeps the other text beside the note. `synced_at` stays. The merge screen is later.
+- Both sides are newer and the texts are the same: that text is the one they agree on.
+- Both sides have it and `synced_at` is null: the same text is the agreement. Two texts are kept beside each other.
 
 The other text is not a note field and is not shown.
+
+A note created and purged before it ever synced is not sent. A purge after a sync stores the id and the time, with no body. While that id is stored, the note is not written across. The side that still has the note asks before it removes its copy. Accept removes the row and leaves the id, so it is not written again. Decline keeps the surviving copy, sends it back, and removes the purge. The same purge sent again returns that copy and does not ask again. A later purge asks again. The side that still has the body supplies it.
 
 ## Compose
 
