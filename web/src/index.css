@@ -108,3 +108,19 @@ li form {
 .nav a {
   color: #8a8076;
 }
+
+.ask {
+  margin: 0.25rem 0 0;
+  color: #8a8076;
+}
+
+.asked {
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  background: #25211e;
+  border: 1px solid #3a342f;
+}
+
+.asked + .actions {
+  margin-top: 0.75rem;
+}

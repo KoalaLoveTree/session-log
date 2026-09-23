@@ -95,6 +95,7 @@ Request: `{ "entries": [ sync entry, ... ], "purges": [ { "id", "purged_at" } ] 
 - A purge whose `purged_at` equals that entry’s `declined_purged_at` is not stored. The entry is included in the response. Any other `purged_at` is stored and `declined_purged_at` is cleared
 - 400 `{ "error": "id must be a uuid" }` if an `id` is missing or not a lowercase UUID
 - 400 `{ "error": "body must not be empty" }` if a note `body` is missing, empty, or whitespace-only
+- 400 `{ "error": "bad time" }` if a time is missing or not RFC3339
 
 ### `GET /api/purges/pending`
 
@@ -115,6 +116,7 @@ Remove the purge. If the entry exists, keep the stored row. If it does not, the 
 - 200 the entry
 - 400 `{ "error": "id must be a uuid" }` if the entry is missing and `id` is not a lowercase UUID
 - 400 `{ "error": "body must not be empty" }` if the entry is missing and `body` is missing, empty, or whitespace-only
+- 400 `{ "error": "bad time" }` if the entry is missing and a time is missing or not RFC3339
 - 404 `{ "error": "not found" }` if that id is not in `purges`
 
 ### `GET /api/openapi.json`

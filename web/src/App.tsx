@@ -6,6 +6,11 @@ type Entry = {
   created_at: string;
 };
 
+type PendingPurge = {
+  id: string;
+  changed: boolean;
+};
+
 function newId(): string {
   const bytes = new Uint8Array(16);
   crypto.getRandomValues(bytes);
@@ -109,6 +114,43 @@ function EntryBody({ body }: { body: string }) {
   );
 }
 
+function purgeQuestion(changed: boolean): string {
+  return changed
+    ? "The phone purged this, and this copy changed after the last sync. Remove it here too?"
+    : "The phone purged this. Remove it here too?";
+}
+
+function PurgeAsk({
+  changed,
+  body,
+  busy,
+  onRemove,
+  onKeep,
+}: {
+  changed: boolean;
+  body: string;
+  busy: boolean;
+  onRemove: () => void;
+  onKeep: () => void;
+}) {
+  return (
+    <>
+      <p className="ask">{purgeQuestion(changed)}</p>
+      <div className="asked">
+        <EntryBody body={body} />
+      </div>
+      <div className="actions">
+        <button type="button" onClick={onRemove} disabled={busy}>
+          Remove
+        </button>
+        <button type="button" onClick={onKeep} disabled={busy}>
+          Keep
+        </button>
+      </div>
+    </>
+  );
+}
+
 export default function App() {
   const deletedPage =
     window.location.pathname.replace(/\/$/, "") === "/deleted";
@@ -118,6 +160,7 @@ export default function App() {
   const [busy, setBusy] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editBody, setEditBody] = useState("");
+  const [pending, setPending] = useState<Map<string, boolean>>(new Map());
 
   async function load() {
     const res = await fetch(
@@ -129,6 +172,47 @@ export default function App() {
     }
     const data: { entries: Entry[] } = await res.json();
     setEntries(data.entries);
+    const pendingRes = await fetch("/api/purges/pending");
+    if (!pendingRes.ok) {
+      setError("could not load entries");
+      return;
+    }
+    const pendingData: { purges: PendingPurge[] } = await pendingRes.json();
+    const shown = new Set(data.entries.map((entry) => entry.id));
+    const next = new Map<string, boolean>();
+    for (const purge of pendingData.purges) {
+      if (shown.has(purge.id)) {
+        next.set(purge.id, purge.changed);
+      }
+    }
+    setPending(next);
+  }
+
+  async function answerPurge(id: string, accept: boolean) {
+    setError(null);
+    setBusy(true);
+    try {
+      const res = await fetch(
+        `/api/purges/${id}/${accept ? "accept" : "decline"}`,
+        { method: "POST" },
+      );
+      if (!res.ok) {
+        let detail = accept ? "could not delete" : "could not save";
+        try {
+          const data: { error?: string } = await res.json();
+          detail = data.error ?? detail;
+        } catch {
+          /* a failure may have no JSON body */
+        }
+        setError(detail);
+        return;
+      }
+      await load();
+    } catch {
+      setError(accept ? "could not delete" : "could not save");
+    } finally {
+      setBusy(false);
+    }
   }
 
   useEffect(() => {
@@ -306,30 +390,47 @@ export default function App() {
           <p>No deleted entries.</p>
         ) : (
           <ul>
-            {entries.map((entry) => (
-              <li key={entry.id}>
-                <div className="meta">
-                  <time dateTime={entry.created_at}>
-                    {formatWhen(entry.created_at)}
-                  </time>
-                  <button
-                    type="button"
-                    onClick={() => onRestore(entry.id)}
-                    disabled={busy}
-                  >
-                    Restore
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onPurge(entry.id)}
-                    disabled={busy}
-                  >
-                    Purge
-                  </button>
-                </div>
-                <EntryBody body={entry.body} />
-              </li>
-            ))}
+            {entries.map((entry) => {
+              const changed = pending.get(entry.id);
+              return (
+                <li key={entry.id}>
+                  <div className="meta">
+                    <time dateTime={entry.created_at}>
+                      {formatWhen(entry.created_at)}
+                    </time>
+                    {changed === undefined ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => onRestore(entry.id)}
+                          disabled={busy}
+                        >
+                          Restore
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => onPurge(entry.id)}
+                          disabled={busy}
+                        >
+                          Purge
+                        </button>
+                      </>
+                    ) : null}
+                  </div>
+                  {changed === undefined ? (
+                    <EntryBody body={entry.body} />
+                  ) : (
+                    <PurgeAsk
+                      changed={changed}
+                      body={entry.body}
+                      busy={busy}
+                      onRemove={() => answerPurge(entry.id, true)}
+                      onKeep={() => answerPurge(entry.id, false)}
+                    />
+                  )}
+                </li>
+              );
+            })}
           </ul>
         )}
       </main>
@@ -358,55 +459,68 @@ export default function App() {
         <p>No entries yet.</p>
       ) : (
         <ul>
-          {entries.map((entry) => (
-            <li key={entry.id}>
-              <div className="meta">
-                <time dateTime={entry.created_at}>
-                  {formatWhen(entry.created_at)}
-                </time>
-                {editingId === entry.id ? null : (
-                  <button
-                    type="button"
-                    onClick={() => startEdit(entry)}
-                    disabled={busy}
-                  >
-                    Edit
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => onDelete(entry.id)}
-                  disabled={busy}
-                >
-                  Delete
-                </button>
-              </div>
-              {editingId === entry.id ? (
-                <form onSubmit={(event) => onSaveEdit(event, entry.id)}>
-                  <textarea
-                    value={editBody}
-                    onChange={(event) => setEditBody(event.target.value)}
-                    onKeyDown={(event) => onKeyDown(event, setEditBody)}
-                    rows={4}
-                  />
-                  <div className="actions">
-                    <button type="submit" disabled={busy}>
-                      Save
-                    </button>
+          {entries.map((entry) => {
+            const changed = pending.get(entry.id);
+            return (
+              <li key={entry.id}>
+                <div className="meta">
+                  <time dateTime={entry.created_at}>
+                    {formatWhen(entry.created_at)}
+                  </time>
+                  {changed !== undefined || editingId === entry.id ? null : (
                     <button
                       type="button"
-                      onClick={() => setEditingId(null)}
+                      onClick={() => startEdit(entry)}
                       disabled={busy}
                     >
-                      Cancel
+                      Edit
                     </button>
-                  </div>
-                </form>
-              ) : (
-                <EntryBody body={entry.body} />
-              )}
-            </li>
-          ))}
+                  )}
+                  {changed === undefined ? (
+                    <button
+                      type="button"
+                      onClick={() => onDelete(entry.id)}
+                      disabled={busy}
+                    >
+                      Delete
+                    </button>
+                  ) : null}
+                </div>
+                {changed !== undefined ? (
+                  <PurgeAsk
+                    changed={changed}
+                    body={entry.body}
+                    busy={busy}
+                    onRemove={() => answerPurge(entry.id, true)}
+                    onKeep={() => answerPurge(entry.id, false)}
+                  />
+                ) : editingId === entry.id ? (
+                  <form onSubmit={(event) => onSaveEdit(event, entry.id)}>
+                    <textarea
+                      value={editBody}
+                      onChange={(event) => setEditBody(event.target.value)}
+                      onKeyDown={(event) => onKeyDown(event, setEditBody)}
+                      rows={4}
+                    />
+                    <div className="actions">
+                      <button type="submit" disabled={busy}>
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingId(null)}
+                        disabled={busy}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <EntryBody body={entry.body} />
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
     </main>
