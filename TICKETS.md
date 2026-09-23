@@ -4,7 +4,7 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
 
 ## Now
 
-- Implement that sync. Not: the merge screen, or tests. OpenAPI attributes on any route this adds.
+- Split `api/src/lib.rs` into `error`, `entries`, `sync`, and `doc`. `lib.rs` wires the routes. Not: a `db` module, new routes, or a behavior change.
 
 ## Next
 
