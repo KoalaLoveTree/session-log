@@ -42,3 +42,4 @@ Finished tickets, oldest first. Append the next one at the bottom.
 - Android sync shape in the specs. The phone opens the connection, sends notes the PC is missing, and pulls notes the phone is missing. Phone writes hit SQLite first; site writes stay in Postgres until the next open. Both sides edited: keep both texts. A note only one side has has no merge screen. `created_at` is when it was written. Not: the phone app, tests, or OpenAPI.
 - Implement that sync. Not: the merge screen, or tests. OpenAPI attributes on any route this adds.
 - Split `api/src/lib.rs` into `error`, `entries`, `sync`, and `doc`. `lib.rs` wires the routes. Not: a `db` module, new routes, or a behavior change.
+- Tests for that sync. Not: new behavior, or phone UI tests.

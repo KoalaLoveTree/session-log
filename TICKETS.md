@@ -1,10 +1,8 @@
 # Tickets
 
-Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** is a parking lot — no dates, do not start from here unless using the app hurt. A finished item moves to `DONE.md`.
+**Now** holds the ticket in progress, with what / not, and is empty between tickets. **Next** is the queue. **Later** is a parking lot — no dates, do not start from here unless using the app hurt. A finished item moves to `DONE.md`.
 
 ## Now
-
-- Tests for that sync. Not: new behavior, or phone UI tests.
 
 ## Next
 
@@ -17,6 +15,11 @@ Exactly one item in **Now**, with what / not. **Next** is the queue. **Later** i
   - One person. The phone on the same Wi-Fi still has to get in.
   - The v1 fence and the screen spec say no login. This item is the change.
   - The gate itself is not chosen yet.
+- Sync cases `api/tests/sync.rs` does not state yet. Not: new behavior, phone UI tests, or replacing the tests already committed.
+  - A note created and purged before it ever synced is not sent, and that id can be written again.
+  - A soft-delete only the PC has, and a soft-delete only the phone has, are kept and stamped.
+  - A bad purge id or a bad purge time is 400. Decline of a missing row rejects a bad id, a blank body, and a bad time, and the purge stays.
+  - A second purge for an id already stored leaves the first `purged_at`.
 
 ## Later
 
