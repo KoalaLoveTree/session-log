@@ -6,9 +6,8 @@
 
 ## Next
 
-- Merge on the phone and on the PC site. Not: an automatic winner.
-  - Either side shows both texts. You write the one that remains, and the sync carries it to the other side.
-  - A delete on one side and an edit on the other waits for that same step.
+- Merge on the phone and on the PC site, as that spec. Not: an automatic winner, or tests.
+  - The page and the phone each show both texts. The write is the one that remains. OpenAPI on any route this changes.
 - While that app is open, the PC can tell the open connection to pull again. Not: the PC calling the phone, and not a sync with the app closed.
 - Only the owner can open the log. Not: accounts for other people, a public host, or a new Wi-Fi password.
   - Anyone on the Wi-Fi can open the site today. The Wi-Fi password stays strong and rotated. It is not the app gate.

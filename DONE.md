@@ -43,3 +43,4 @@ Finished tickets, oldest first. Append the next one at the bottom.
 - Implement that sync. Not: the merge screen, or tests. OpenAPI attributes on any route this adds.
 - Split `api/src/lib.rs` into `error`, `entries`, `sync`, and `doc`. `lib.rs` wires the routes. Not: a `db` module, new routes, or a behavior change.
 - Tests for that sync. Not: new behavior, or phone UI tests.
+- Spec the merge. Either side shows both texts. You write the one that remains, and the next sync carries it. A delete on one side and an edit on the other waits for that write. Not: an automatic winner, the page, the phone app, route code, tests, or OpenAPI.

@@ -55,11 +55,13 @@ The phone opens the connection when its app opens. Each note remembers `synced_a
 
 - Only one side has it, and its id is not a stored purge: that copy is sent across. No merge screen.
 - Only one side is newer than `synced_at`: that copy is kept, including a soft-delete. Both sides then store the same `updated_at` and `synced_at`, from the PC clock. The old text is not kept.
-- Both sides are newer and the texts differ: each side keeps its `body` and keeps the other text beside the note. `synced_at` stays. The merge screen is later.
-- Both sides are newer and the texts are the same: that text is the one they agree on.
-- Both sides have it and `synced_at` is null: the same text is the agreement. Two texts are kept beside each other.
+- Both sides are newer and they agree: the same body and the same deleted state. That text is the one they agree on.
+- Both sides are newer and they do not agree: the bodies differ, or the body is the same and the deleted state differs. Each side keeps its `body` and its `deleted_at`, and keeps the other body beside the note. `synced_at` stays. A delete on one side and an edit on the other is this case. That side shows both texts. You write the one that remains: that body, the other text cleared, `deleted_at` cleared, and `updated_at` set to this write.
+- On the next sync, the other side still holds the pair from that same `synced_at`: both sides store the written body, clear the other text, clear `deleted_at`, and set `updated_at` and `synced_at` from the PC clock.
+- The other side already wrote a different body, or edited again while still holding the pair: both texts are kept again. `synced_at` stays.
+- Both sides have it and `synced_at` is null: that is both sides newer. The agree and wait rules above apply.
 
-The other text is not a note field and is not shown.
+The other text is not a note field.
 
 A note created and purged before it ever synced is not sent. A purge after a sync stores the id and the time, with no body. While that id is stored, the note is not written across. The side that still has the note asks before it removes its copy. Accept removes the row and leaves the id, so it is not written again. Decline keeps the surviving copy, sends it back, and removes the purge. The same purge sent again returns that copy and does not ask again. A later purge asks again. The side that still has the body supplies it.
 

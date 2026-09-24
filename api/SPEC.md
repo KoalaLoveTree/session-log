@@ -17,7 +17,7 @@ Postgres. Note columns on `entries` store the note in `SPEC.md`. `created_at` de
 | `other_body` | `TEXT NULL` |
 | `declined_purged_at` | `TIMESTAMPTZ NULL` |
 
-`synced_at`, `other_body`, and `declined_purged_at` are sync state, not note fields. `other_body` is set only while both sides are newer and the texts differ. `declined_purged_at` is the purge time a decline already answered. The entry routes do not return them.
+`synced_at`, `other_body`, and `declined_purged_at` are sync state, not note fields. `other_body` is set only while both sides are newer and they do not agree. `declined_purged_at` is the purge time a decline already answered. The list routes return `other_body`. They do not return `synced_at` or `declined_purged_at`. The other entry routes do not return sync state.
 
 `purges` is one row per purged id. No body.
 
@@ -45,20 +45,24 @@ Request: `{ "id": "string", "body": "string" }`
 
 ### `GET /api/entries`
 
-- 200 `{ "entries": [ entry, ... ] }`
+- 200 `{ "entries": [ entry, ... ] }` — each entry plus `other_body` (`null` when unset)
 - Visible only. Newest first. Cap 50. Not the phone’s sync pull.
 
 ### `GET /api/entries/deleted`
 
-- 200 `{ "entries": [ entry, ... ] }` — soft-deleted only, newest `deleted_at` first, cap 50
+- 200 `{ "entries": [ entry, ... ] }` — soft-deleted only, newest `deleted_at` first, cap 50. Each entry plus `other_body` (`null` when unset)
 
 ### `PUT /api/entries/{id}`
 
 Request: `{ "body": "string" }`
 
-- 200 the entry — `created_at` unchanged, `updated_at` set to this write
+When `other_body` is set, this is the merge write in `SPEC.md`, including a deleted row. The stored body is the request body. `other_body` and `deleted_at` become null. `updated_at` is this write. `created_at` stays.
+
+When `other_body` is null, the row must be visible. `body` and `updated_at` change. `created_at` and `deleted_at` stay.
+
+- 200 the entry
 - 400 `{ "error": "body must not be empty" }` if missing, empty, or whitespace-only
-- 404 `{ "error": "not found" }` if missing or already deleted
+- 404 `{ "error": "not found" }` if the id is missing, or `other_body` is null and the row is already deleted
 
 `id` in the path is the stored UUID.
 

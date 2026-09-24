@@ -2,7 +2,9 @@
 
 The phone’s copy. The note and the sync rules are in `SPEC.md`.
 
-SQLite. `entries` stores the note in `SPEC.md`. The row also stores `synced_at` and, while both sides are newer and the texts differ, the other body. Until then, the other body is null.
+SQLite. `entries` stores the note in `SPEC.md`. The row also stores `synced_at` and, while both sides do not agree, the other body. Until then, the other body is null.
+
+While the other body is set, the phone shows both texts and a box for the one that remains. The write saves here first: that body, the other body null, `deleted_at` null, and `updated_at` set to this write. The next sync carries it, as in `SPEC.md`.
 
 `purges` stores an id and `purged_at`. No body.
 
