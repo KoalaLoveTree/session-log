@@ -15,6 +15,7 @@
     ),
     components(schemas(
         crate::entries::Entry,
+        crate::entries::ListedEntry,
         crate::entries::EntryList,
         crate::entries::NewEntry,
         crate::entries::EntryUpdate,

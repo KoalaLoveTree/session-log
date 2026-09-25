@@ -7,9 +7,19 @@ pub(crate) struct Entry {
     deleted_at: Option<chrono::DateTime<chrono::Utc>>,
 }
 
+#[derive(serde::Serialize, sqlx::FromRow, utoipa::ToSchema)]
+pub(crate) struct ListedEntry {
+    id: String,
+    body: String,
+    created_at: chrono::DateTime<chrono::Utc>,
+    updated_at: chrono::DateTime<chrono::Utc>,
+    deleted_at: Option<chrono::DateTime<chrono::Utc>>,
+    other_body: Option<String>,
+}
+
 #[derive(serde::Serialize, utoipa::ToSchema)]
 pub(crate) struct EntryList {
-    entries: Vec<Entry>,
+    entries: Vec<ListedEntry>,
 }
 
 #[derive(serde::Deserialize, utoipa::ToSchema)]
@@ -98,13 +108,13 @@ pub(crate) async fn create_entry(
 #[utoipa::path(
     get,
     path = "/api/entries",
-    responses((status = 200, description = "Visible entries", body = EntryList))
+    responses((status = 200, description = "Visible entries, each with other_body", body = EntryList))
 )]
 pub(crate) async fn list_entries(
     axum::extract::State(state): axum::extract::State<crate::AppState>,
 ) -> Result<axum::Json<EntryList>, crate::error::ApiError> {
-    let entries = sqlx::query_as::<_, Entry>(
-        "SELECT id, body, created_at, updated_at, deleted_at
+    let entries = sqlx::query_as::<_, ListedEntry>(
+        "SELECT id, body, created_at, updated_at, deleted_at, other_body
          FROM entries
          WHERE deleted_at IS NULL
          ORDER BY created_at DESC, id DESC
@@ -120,13 +130,13 @@ pub(crate) async fn list_entries(
 #[utoipa::path(
     get,
     path = "/api/entries/deleted",
-    responses((status = 200, description = "Soft-deleted entries", body = EntryList))
+    responses((status = 200, description = "Soft-deleted entries, each with other_body", body = EntryList))
 )]
 pub(crate) async fn list_deleted(
     axum::extract::State(state): axum::extract::State<crate::AppState>,
 ) -> Result<axum::Json<EntryList>, crate::error::ApiError> {
-    let entries = sqlx::query_as::<_, Entry>(
-        "SELECT id, body, created_at, updated_at, deleted_at
+    let entries = sqlx::query_as::<_, ListedEntry>(
+        "SELECT id, body, created_at, updated_at, deleted_at, other_body
          FROM entries
          WHERE deleted_at IS NOT NULL
          ORDER BY deleted_at DESC, id DESC
@@ -145,7 +155,7 @@ pub(crate) async fn list_deleted(
     params(("id" = String, Path, description = "Entry id")),
     request_body = EntryUpdate,
     responses(
-        (status = 200, description = "Updated", body = Entry),
+        (status = 200, description = "Updated. When other_body is set, that field and deleted_at are cleared", body = Entry),
         (status = 400, description = "Empty body", body = crate::error::ErrorBody),
         (status = 404, description = "Not found", body = crate::error::ErrorBody)
     )
@@ -160,8 +170,12 @@ pub(crate) async fn update_entry(
 
     let entry = sqlx::query_as::<_, Entry>(
         "UPDATE entries
-         SET body = $1, updated_at = now()
-         WHERE id = $2 AND deleted_at IS NULL
+         SET body = $1,
+             updated_at = now(),
+             other_body = CASE WHEN other_body IS NOT NULL THEN NULL ELSE other_body END,
+             deleted_at = CASE WHEN other_body IS NOT NULL THEN NULL ELSE deleted_at END
+         WHERE id = $2
+           AND (other_body IS NOT NULL OR deleted_at IS NULL)
          RETURNING id, body, created_at, updated_at, deleted_at",
     )
     .bind(body)

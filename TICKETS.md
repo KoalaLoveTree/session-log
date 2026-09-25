@@ -6,8 +6,6 @@
 
 ## Next
 
-- Merge on the phone and on the PC site, as that spec. Not: an automatic winner, or tests.
-  - The page and the phone each show both texts. The write is the one that remains. OpenAPI on any route this changes.
 - While that app is open, the PC can tell the open connection to pull again. Not: the PC calling the phone, and not a sync with the app closed.
 - Only the owner can open the log. Not: accounts for other people, a public host, or a new Wi-Fi password.
   - Anyone on the Wi-Fi can open the site today. The Wi-Fi password stays strong and rotated. It is not the app gate.
@@ -22,6 +20,11 @@
 
 ## Later
 
+- A setting for how an edit meets a delete or a purge. Not: a settings screen, `.env`, or changing the merge in progress.
+  - Baseline stays the spec. One side changed wins, including a soft-delete. Both sides differ: both texts, and you write the one that remains. A purge asks. Save clears `deleted_at`.
+  - One rule merges when an edit meets a delete or a purge. Another lets delete or purge win.
+  - The other side's deleted state is not stored today, only the other text. Showing that status belongs with the stricter rule.
+  - The API owns the setting. Unset means the baseline. The phone reads the same choice. The screen comes after more than one rule exists.
 - The app syncs on Wi-Fi without being opened. Not: the first phone version. The phone still starts the connection.
 - Menu: log / deleted, and room for more lists. Not: React Router unless we pick it.
 - Mentor questions and dreams as their own lists. Not: mixing them into the session log.

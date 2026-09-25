@@ -4,6 +4,7 @@ type Entry = {
   id: string;
   body: string;
   created_at: string;
+  other_body: string | null;
 };
 
 type PendingPurge = {
@@ -114,6 +115,33 @@ function EntryBody({ body }: { body: string }) {
   );
 }
 
+function onKeyDown(
+  event: KeyboardEvent<HTMLTextAreaElement>,
+  setValue: (value: string) => void,
+) {
+  if (event.key !== "Enter" || event.nativeEvent.isComposing) {
+    return;
+  }
+  const insertingNewline =
+    event.shiftKey || window.matchMedia("(pointer: coarse)").matches;
+  if (!insertingNewline) {
+    event.preventDefault();
+    event.currentTarget.form?.requestSubmit();
+    return;
+  }
+  const el = event.currentTarget;
+  const edit = continueList(el.value, el.selectionStart, el.selectionEnd);
+  if (!edit) {
+    return;
+  }
+  event.preventDefault();
+  setValue(edit.value);
+  const pos = edit.cursor;
+  requestAnimationFrame(() => {
+    el.setSelectionRange(pos, pos);
+  });
+}
+
 function purgeQuestion(changed: boolean): string {
   return changed
     ? "The phone purged this, and this copy changed after the last sync. Remove it here too?"
@@ -124,21 +152,25 @@ function PurgeAsk({
   changed,
   body,
   busy,
+  showBody,
   onRemove,
   onKeep,
 }: {
   changed: boolean;
   body: string;
   busy: boolean;
+  showBody: boolean;
   onRemove: () => void;
   onKeep: () => void;
 }) {
   return (
     <>
       <p className="ask">{purgeQuestion(changed)}</p>
-      <div className="asked">
-        <EntryBody body={body} />
-      </div>
+      {showBody ? (
+        <div className="asked">
+          <EntryBody body={body} />
+        </div>
+      ) : null}
       <div className="actions">
         <button type="button" onClick={onRemove} disabled={busy}>
           Remove
@@ -147,6 +179,91 @@ function PurgeAsk({
           Keep
         </button>
       </div>
+    </>
+  );
+}
+
+function MergeFields({
+  body,
+  otherBody,
+  busy,
+  onSave,
+}: {
+  body: string;
+  otherBody: string;
+  busy: boolean;
+  onSave: (body: string) => void;
+}) {
+  const [remaining, setRemaining] = useState(body);
+  return (
+    <>
+      <EntryBody body={body} />
+      <div className="asked">
+        <EntryBody body={otherBody} />
+      </div>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSave(remaining);
+        }}
+      >
+        <textarea
+          value={remaining}
+          onChange={(event) => setRemaining(event.target.value)}
+          onKeyDown={(event) => onKeyDown(event, setRemaining)}
+          rows={4}
+        />
+        <div className="actions">
+          <button type="submit" disabled={busy}>
+            Save
+          </button>
+        </div>
+      </form>
+    </>
+  );
+}
+
+function otherText(entry: Entry): string | null {
+  return typeof entry.other_body === "string" ? entry.other_body : null;
+}
+
+function Conflict({
+  entry,
+  pendingChanged,
+  busy,
+  onMergeSave,
+  onRemove,
+  onKeep,
+}: {
+  entry: Entry;
+  pendingChanged: boolean | undefined;
+  busy: boolean;
+  onMergeSave: (body: string) => void;
+  onRemove: () => void;
+  onKeep: () => void;
+}) {
+  const other = otherText(entry);
+  return (
+    <>
+      {pendingChanged !== undefined ? (
+        <PurgeAsk
+          changed={pendingChanged}
+          body={entry.body}
+          busy={busy}
+          showBody={other === null}
+          onRemove={onRemove}
+          onKeep={onKeep}
+        />
+      ) : null}
+      {other !== null ? (
+        <MergeFields
+          key={`${entry.body}\0${other}`}
+          body={entry.body}
+          otherBody={other}
+          busy={busy}
+          onSave={onMergeSave}
+        />
+      ) : null}
     </>
   );
 }
@@ -218,33 +335,6 @@ export default function App() {
   useEffect(() => {
     load().catch(() => setError("could not load entries"));
   }, []);
-
-  function onKeyDown(
-    event: KeyboardEvent<HTMLTextAreaElement>,
-    setValue: (value: string) => void,
-  ) {
-    if (event.key !== "Enter" || event.nativeEvent.isComposing) {
-      return;
-    }
-    const insertingNewline =
-      event.shiftKey || window.matchMedia("(pointer: coarse)").matches;
-    if (!insertingNewline) {
-      event.preventDefault();
-      event.currentTarget.form?.requestSubmit();
-      return;
-    }
-    const el = event.currentTarget;
-    const edit = continueList(el.value, el.selectionStart, el.selectionEnd);
-    if (!edit) {
-      return;
-    }
-    event.preventDefault();
-    setValue(edit.value);
-    const pos = edit.cursor;
-    requestAnimationFrame(() => {
-      el.setSelectionRange(pos, pos);
-    });
-  }
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
@@ -354,28 +444,34 @@ export default function App() {
     setEditBody(entry.body);
   }
 
-  async function onSaveEdit(event: FormEvent, id: string) {
-    event.preventDefault();
+  async function saveBody(id: string, nextBody: string) {
     setError(null);
     setBusy(true);
     try {
       const res = await fetch(`/api/entries/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: editBody }),
+        body: JSON.stringify({ body: nextBody }),
       });
       const data: { error?: string } = await res.json();
       if (!res.ok) {
         setError(data.error ?? "could not save");
         return;
       }
-      setEditingId(null);
+      if (editingId === id) {
+        setEditingId(null);
+      }
       await load();
     } catch {
       setError("could not save");
     } finally {
       setBusy(false);
     }
+  }
+
+  function onSaveEdit(event: FormEvent, id: string) {
+    event.preventDefault();
+    void saveBody(id, editBody);
   }
 
   if (deletedPage) {
@@ -417,16 +513,17 @@ export default function App() {
                       </>
                     ) : null}
                   </div>
-                  {changed === undefined ? (
-                    <EntryBody body={entry.body} />
-                  ) : (
-                    <PurgeAsk
-                      changed={changed}
-                      body={entry.body}
+                  {changed !== undefined || otherText(entry) !== null ? (
+                    <Conflict
+                      entry={entry}
+                      pendingChanged={changed}
                       busy={busy}
+                      onMergeSave={(next) => void saveBody(entry.id, next)}
                       onRemove={() => answerPurge(entry.id, true)}
                       onKeep={() => answerPurge(entry.id, false)}
                     />
+                  ) : (
+                    <EntryBody body={entry.body} />
                   )}
                 </li>
               );
@@ -467,7 +564,9 @@ export default function App() {
                   <time dateTime={entry.created_at}>
                     {formatWhen(entry.created_at)}
                   </time>
-                  {changed !== undefined || editingId === entry.id ? null : (
+                  {changed !== undefined ||
+                  editingId === entry.id ||
+                  otherText(entry) !== null ? null : (
                     <button
                       type="button"
                       onClick={() => startEdit(entry)}
@@ -486,11 +585,12 @@ export default function App() {
                     </button>
                   ) : null}
                 </div>
-                {changed !== undefined ? (
-                  <PurgeAsk
-                    changed={changed}
-                    body={entry.body}
+                {changed !== undefined || otherText(entry) !== null ? (
+                  <Conflict
+                    entry={entry}
+                    pendingChanged={changed}
                     busy={busy}
+                    onMergeSave={(next) => void saveBody(entry.id, next)}
                     onRemove={() => answerPurge(entry.id, true)}
                     onKeep={() => answerPurge(entry.id, false)}
                   />

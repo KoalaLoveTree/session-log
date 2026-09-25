@@ -116,6 +116,21 @@ fn assert_note_fields(entry: &serde_json::Value) {
     }
 }
 
+fn assert_listed(entry: &serde_json::Value) {
+    let obj = entry.as_object().unwrap();
+    assert_eq!(obj.len(), 6);
+    for key in [
+        "id",
+        "body",
+        "created_at",
+        "updated_at",
+        "deleted_at",
+        "other_body",
+    ] {
+        assert!(obj.contains_key(key));
+    }
+}
+
 fn assert_stamped(entry: &serde_json::Value) {
     assert!(entry["synced_at"].is_string());
     assert_eq!(entry["updated_at"], entry["synced_at"]);
@@ -172,10 +187,11 @@ async fn phone_only_note_is_stored(pool: sqlx::PgPool) {
     assert_stamped(entry);
 
     let visible = get(&pool, "/api/entries").await;
-    assert_note_fields(&visible["entries"][0]);
+    assert_listed(&visible["entries"][0]);
     assert_eq!(visible["entries"][0]["id"], uuid(1));
     assert_eq!(visible["entries"][0]["body"], "from phone");
     assert!(visible["entries"][0]["deleted_at"].is_null());
+    assert!(visible["entries"][0]["other_body"].is_null());
 }
 
 #[sqlx::test]
@@ -272,8 +288,9 @@ async fn both_newer_keep_both_texts(pool: sqlx::PgPool) {
     assert_eq!(entry["synced_at"], agreed["synced_at"]);
 
     let visible = get(&pool, "/api/entries").await;
-    assert_note_fields(&visible["entries"][0]);
+    assert_listed(&visible["entries"][0]);
     assert_eq!(visible["entries"][0]["body"], "pc text");
+    assert_eq!(visible["entries"][0]["other_body"], "phone text");
 }
 
 #[sqlx::test]
@@ -339,8 +356,9 @@ async fn unsynced_different_texts_stay(pool: sqlx::PgPool) {
     assert!(entry["synced_at"].is_null());
 
     let visible = get(&pool, "/api/entries").await;
-    assert_note_fields(&visible["entries"][0]);
+    assert_listed(&visible["entries"][0]);
     assert_eq!(visible["entries"][0]["body"], "pc text");
+    assert_eq!(visible["entries"][0]["other_body"], "phone text");
     assert_eq!(visible["entries"][0]["created_at"], created["created_at"]);
 }
 

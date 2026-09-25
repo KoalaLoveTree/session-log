@@ -121,6 +121,7 @@ li form {
   border: 1px solid #3a342f;
 }
 
-.asked + .actions {
+.asked + .actions,
+.ask + .actions {
   margin-top: 0.75rem;
 }

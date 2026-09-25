@@ -21,7 +21,7 @@ Two URLs, one `App.tsx`, no React Router. nginx `try_files` serves `index.html` 
 - Delete on a row → confirm “Are you sure?” → `DELETE /api/entries/{id}`, then reload the list
 - An id from `GET /api/purges/pending` that is on this page shows that note with the question. The note `body` is on the page. `changed` is false: “The phone purged this. Remove it here too?” `changed` is true: “The phone purged this, and this copy changed after the last sync. Remove it here too?” Remove → `POST /api/purges/{id}/accept`. Keep → `POST /api/purges/{id}/decline`. Then reload the list
 - Edit on a row → textarea + Save / Cancel → `PUT /api/entries/{id}`, then reload the list
-- A row whose `other_body` is set shows this `body` and the other text on the page. The other text is marked apart from the box. A box for the one that remains. Save → `PUT /api/entries/{id}` with that body, then reload the list. On `/` and on `/deleted`
+- A row whose `other_body` is set shows this `body` and the other text on the page. The other text is marked apart from the box. A box for the one that remains, starting as this `body`. Save → `PUT /api/entries/{id}` with that body, then reload the list. On `/` and on `/deleted`. On a pending purge, the question, Remove, and Keep stay with that box
 - Lines starting with `- ` show as disc bullets; `* ` as circle. Stored text stays plain. Edit shows the raw `- `/`* `.
 
 No tags, search, login, or a nav menu.

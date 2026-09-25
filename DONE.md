@@ -45,3 +45,4 @@ Finished tickets, oldest first. Append the next one at the bottom.
 - Tests for that sync. Not: new behavior, or phone UI tests.
 - Spec the merge. Either side shows both texts. You write the one that remains, and the next sync carries it. A delete on one side and an edit on the other waits for that write. Not: an automatic winner, the page, the phone app, route code, tests, or OpenAPI.
 - Coverage of the API tests with cargo-llvm-cov. Not: a percentage gate, a hosted coverage site, a database mock, or page tests.
+- Merge on the phone and on the PC site, as that spec. Not: an automatic winner, or tests. The page and the phone each show both texts. The write is the one that remains. OpenAPI on any route this changes.
