@@ -67,10 +67,20 @@ Linger starts **your** user services at boot, even at the login screen, before a
 cd api
 cargo fmt
 cargo clippy -- -D warnings
-DATABASE_URL=postgres://lr:lr@127.0.0.1:5433/lr cargo test
 ```
 
-`cargo test` needs the test stack (`docker compose --env-file .env.test up --build`) so Postgres is on `127.0.0.1:5433`. Tests create their own databases; they do not write your log.
+```bash
+make build-live
+make build-test
+make test
+make cov
+```
+
+`make build-live` builds and starts the live site on port 3000. `make build-test` does the same for the test site on port 3001. Both stay running in the background.
+
+`make test` starts the test database when it is down, then runs `cargo test` in `api/`. Postgres listens on `127.0.0.1:5433`. Tests create their own databases; they do not write your log.
+
+`make cov` runs those same tests under `cargo llvm-cov` and writes `api/target/llvm-cov/html/index.html`. It then prints a `file://` link; click that to open the report. The site on port 3000 does not serve it. Coverage needs the `llvm-tools-preview` rustup component and `cargo-llvm-cov` (`cargo install cargo-llvm-cov --locked`).
 
 ## Docs
 
@@ -78,4 +88,4 @@ DATABASE_URL=postgres://lr:lr@127.0.0.1:5433/lr cargo test
 - `TICKETS.md` — work queue
 - [http://localhost:3000/api/docs](http://localhost:3000/api/docs) — API (Swagger)
 
-GitHub Actions (`ci`) runs fmt, clippy, `cargo test`, and `cargo build` on push.
+GitHub Actions (`ci`) runs fmt, clippy, the tests under `cargo llvm-cov`, and `cargo build` on push. The job log prints the coverage summary. A failing test fails the job.
