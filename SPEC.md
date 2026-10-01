@@ -49,6 +49,8 @@ An entry is `{ "id", "body", "created_at", "updated_at", "deleted_at" }`. Times 
 
 Same origin: the browser only talks to the web origin. The web container proxies `/api` to the api container. The phone uses that same `/api`.
 
+The reminder app reads `GET /api/entries` and opens the site. It does not sync. The schedule is in `android/SPEC.md`.
+
 ## Sync
 
 The phone opens the connection when its app opens. Each note remembers `synced_at`: the PC clock time of the last sync that agreed on it. `synced_at` is null until then. A copy is still that version when `updated_at` equals `synced_at`. A local edit sets `updated_at` after `synced_at`. The phone does that when its own clock is behind.
