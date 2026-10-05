@@ -47,3 +47,4 @@ Finished tickets, oldest first. Append the next one at the bottom.
 - Coverage of the API tests with cargo-llvm-cov. Not: a percentage gate, a hosted coverage site, a database mock, or page tests.
 - Merge on the phone and on the PC site, as that spec. Not: an automatic winner, or tests. The page and the phone each show both texts. The write is the one that remains. OpenAPI on any route this changes.
 - Phone reminders at a set time on chosen weekdays. The tap opens the log on this PC. Not: writing notes on the phone, sync, or a calendar event.
+- Phone reminder in Kotlin, as `android/SPEC.md`. Each weekday is off or on at one local time. The banner stays due until a newer note, or while the PC cannot be reached. Later and When apply to this occurrence. A tap opens the log. Not: writing notes, the sync connection, or the pull item.

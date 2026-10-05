@@ -4,3 +4,8 @@ node_modules/
 web/dist/
 target/
 GROK.md
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/

@@ -20,9 +20,9 @@ A schedule on the phone. Not a note. Not synced. This app does not write notes a
 
 Monday through Sunday. Each day is off, or on at one local time on a 24-hour clock. An on day comes due every week at that time.
 
-The occurrence stays due until `GET /api/entries` includes a note whose `created_at` is after the time it came due. While the PC cannot be reached, it stays due. The open screen lists every due occurrence.
+The occurrence stays due until `GET /api/entries` includes a note whose `created_at` is after the time it came due. While the PC cannot be reached, it stays due. While one is due, the phone checks that list about once a minute. The open screen lists every due occurrence.
 
-Dismissing the banner leaves it due. The app shows the banner again. A tap opens the stored log address in the browser.
+Dismissing the banner leaves it due, and the banner stays down until the next time a reminder comes due. A tap opens the stored log address in the browser.
 
 The address starts as `http://session-log.local:3000`. The owner can change it. The LAN address is `http://<lan-ip>:3000` in `SPEC.md`.
 
