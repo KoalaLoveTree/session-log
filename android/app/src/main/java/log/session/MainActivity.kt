@@ -46,6 +46,10 @@ class MainActivity : AppCompatActivity() {
         allowExact = findViewById(R.id.allow_exact)
         days = findViewById(R.id.days)
         dueList = findViewById(R.id.due_list)
+        findViewById<Button>(R.id.notes).setOnClickListener {
+            saveAddress()
+            startActivity(Intent(this, LogActivity::class.java))
+        }
 
         val store = Store.open(this)
         address.setText(store.address)
@@ -75,9 +79,11 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         showExact()
         renderDues()
-        Remind.open(this) { message ->
-            status.text = message.orEmpty()
-            renderDues()
+        Sync.onOpen(this) {
+            Remind.open(this) { message ->
+                status.text = message.orEmpty()
+                renderDues()
+            }
         }
     }
 
